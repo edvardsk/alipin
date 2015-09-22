@@ -12,6 +12,9 @@
   },
   "author": "Edvards Kazlouski",
   "license": "ISC",
+  "scripts": {
+    "test": "return 0"
+  },
   "bugs": {
     "url": "https://github.com/EdvardsKazlouski/alipin/issues"
   },
