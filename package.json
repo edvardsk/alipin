@@ -12,7 +12,7 @@
   "author": "Edvards Kazlouski",
   "license": "ISC",
   "scripts": {
-    "test": "cd ./client && npm test && cd ../server && npm test"
+    "test": "cd ./client && npm test && cd ../server && npm test && cd ../"
   },
   "bugs": {
     "url": "https://github.com/EdvardsKazlouski/alipin/issues"
