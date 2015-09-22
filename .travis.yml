@@ -11,4 +11,4 @@ before_script:
 - npm install -g codeclimate-test-reporter
 
 after_success:
-  - codeclimate < ./coverage/lcov.info
+  - codeclimate < lcov.info
