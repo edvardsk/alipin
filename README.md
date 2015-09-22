@@ -1,4 +1,3 @@
 # alipin
 
 personal assistant
-test
