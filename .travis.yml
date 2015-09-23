@@ -8,7 +8,10 @@ env:
   CODECLIMATE_REPO_TOKEN: b74e18938d2767c9a21e918829df8adb62cdaf2f13b0a910137dbb8aceb9cbed
 
 before_script:
+- npm install -g istanbul
+- npm install -g mocha
 - npm install -g codeclimate-test-reporter
 
 after_success:
-  - codeclimate < lcov.info
+  - istanbul cover _mocha -- -R spec ./*.js
+  - codeclimate < ./coverage/lcov.info
