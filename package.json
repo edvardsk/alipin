@@ -4,21 +4,23 @@
   "description": "Personal assistant with name allipin",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EdvardsKazlouski/alipin.git"
+    "url": "git+ssh://git@github.com:EdvardsKazlouski/alipin.git"
   },
   "author": "Edvards Kazlouski",
   "license": "ISC",
   "main": "./src/main.js",
   "scripts": {
-    "test": "cd ./client && npm test && cd ../server && npm test && cd ../"
+    "serv": "cd ./server && node server.js",
+    "test": "mocha ./server/tests/test.js"
   },
-  "bugs": {
-    "url": "https://github.com/EdvardsKazlouski/alipin/issues"
-  },
-  "homepage": "https://github.com/EdvardsKazlouski/alipin#readme",
   "dependencies": {
+    "chai": "^3.3.0",
     "lodash": "^3.10.1",
     "node-record-lpcm16": "^0.1.4",
     "request": "^2.65.0"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3"
   }
 }
