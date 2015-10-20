@@ -8,7 +8,6 @@
   },
   "author": "Edvards Kazlouski",
   "license": "ISC",
-
   "main": "./src/main.js",
   "scripts": {
     "test": "cd ./client && npm test && cd ../server && npm test && cd ../"
@@ -16,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/EdvardsKazlouski/alipin/issues"
   },
-  "homepage": "https://github.com/EdvardsKazlouski/alipin#readme"
+  "homepage": "https://github.com/EdvardsKazlouski/alipin#readme",
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "node-record-lpcm16": "^0.1.4",
+    "request": "^2.65.0"
+  }
 }
