@@ -1,3 +1,4 @@
 {
-    "LogLevel": 0
+    "LogLevel": 0,
+    "pocketSphinxFile": "../../pocketsphinx/pocket_sphinx_out.txt"
 }

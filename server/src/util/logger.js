@@ -1,6 +1,6 @@
 var conf = require('./conf.js');
 
-function log (level, method, prefix, message) {
+function logMessage (level, method, prefix, message) {
     if (conf.get('LogLevel') <= level) {
         console[method](prefix + ':\n' + (new Date()) + '\n' + message);
     }
@@ -8,23 +8,23 @@ function log (level, method, prefix, message) {
 
 module.exports = {
     log: function (message) {
-        log(this.LogLevels.Log, 'log', 'Log', message);
+        logMessage(this.LogLevels.Log, 'log', 'Log', message);
     },
 
     info: function (message) {
-        log(this.LogLevels.INFO, 'log', 'Info', message);
+        logMessage(this.LogLevels.INFO, 'info', 'Info', message);
     },
 
     debug: function (message) {
-        log(this.LogLevels.DEBUG, 'log', 'Debug', message);
+        logMessage(this.LogLevels.DEBUG, 'log', 'Debug', message);
     },
 
     warn: function (message) {
-        log(this.LogLevels.WARN, 'log', 'Warn', message);
+        logMessage(this.LogLevels.WARN, 'warn', 'Warn', message);
     },
 
     error: function (message) {
-        log(this.LogLevels.ERROR, 'log', 'Error', message);
+        logMessage(this.LogLevels.ERROR, 'error', 'Error', message);
     },
 
     LogLevels: {
