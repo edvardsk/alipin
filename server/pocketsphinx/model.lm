@@ -1,0 +1,80 @@
+Language model created by QuickLM on Tue Feb  2 09:19:18 EST 2016
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 5 sentences and 18 words
+
+\data\
+ngram 1=18
+ngram 2=21
+ngram 3=18
+
+\1-grams:
+-1.1461 </s> -0.3010
+-1.1461 <s> -0.2688
+-1.8451 ALIPIN -0.2688
+-1.8451 HELLO, -0.2948
+-1.5441 IN -0.2884
+-1.3680 IS -0.2820
+-1.8451 MINSK -0.2688
+-1.8451 MY -0.2948
+-1.8451 NOW -0.2688
+-1.8451 PLEASE -0.2688
+-1.8451 SHOW -0.2948
+-1.3680 THE -0.2820
+-1.8451 TIME -0.2948
+-1.5441 TODAY -0.2884
+-1.8451 TWITS -0.2948
+-1.8451 VITEBSK -0.2688
+-1.5441 WEATHER -0.2884
+-1.3680 WHAT -0.2820
+
+\2-grams:
+-1.0000 <s> HELLO, 0.0000
+-1.0000 <s> SHOW 0.0000
+-0.5229 <s> WHAT 0.0000
+-0.3010 ALIPIN </s> -0.3010
+-0.3010 HELLO, ALIPIN 0.0000
+-0.6021 IN MINSK 0.0000
+-0.6021 IN VITEBSK 0.0000
+-0.3010 IS THE 0.0000
+-0.3010 MINSK </s> -0.3010
+-0.3010 MY TWITS 0.0000
+-0.3010 NOW </s> -0.3010
+-0.3010 PLEASE </s> -0.3010
+-0.3010 SHOW MY 0.0000
+-0.7782 THE TIME 0.0000
+-0.4771 THE WEATHER 0.0000
+-0.3010 TIME NOW 0.0000
+-0.3010 TODAY IN 0.0000
+-0.3010 TWITS PLEASE 0.0000
+-0.3010 VITEBSK </s> -0.3010
+-0.3010 WEATHER TODAY 0.0000
+-0.3010 WHAT IS 0.0000
+
+\3-grams:
+-0.3010 <s> HELLO, ALIPIN
+-0.3010 <s> SHOW MY
+-0.3010 <s> WHAT IS
+-0.3010 HELLO, ALIPIN </s>
+-0.3010 IN MINSK </s>
+-0.3010 IN VITEBSK </s>
+-0.7782 IS THE TIME
+-0.4771 IS THE WEATHER
+-0.3010 MY TWITS PLEASE
+-0.3010 SHOW MY TWITS
+-0.3010 THE TIME NOW
+-0.3010 THE WEATHER TODAY
+-0.3010 TIME NOW </s>
+-0.6021 TODAY IN MINSK
+-0.6021 TODAY IN VITEBSK
+-0.3010 TWITS PLEASE </s>
+-0.3010 WEATHER TODAY IN
+-0.3010 WHAT IS THE
+
+\end\
