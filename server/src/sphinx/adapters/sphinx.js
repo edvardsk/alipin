@@ -3,7 +3,7 @@ var _ = require('lodash');
 var path = require("path");
 
 var logger = require('../../util/logger');
-var conf = require('../../util/conf.js');
+var conf = require('../../util/conf');
 
 var EventEmitter = require('events').EventEmitter;
 var fork = require('child_process').fork;
@@ -41,7 +41,7 @@ Sphinx.prototype.record = function () {
     // start listening
 
     if (!this.child) {
-        this.child = fork('./listener.js');
+        this.child = fork(path.join(__dirname, './listener.js'));
         logger.log('Start listening');
     } else {
         logger.error('You can not start recording twice');
@@ -59,11 +59,4 @@ Sphinx.prototype.stop = function () {
     return this;
 };
 
-// test
-var sphinx = new Sphinx();
-
-sphinx.on(function (data) {
-
-});
-
-sphinx.record();
+module.exports = Sphinx;

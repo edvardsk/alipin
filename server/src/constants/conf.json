@@ -3,5 +3,7 @@
     "SPHINX_OUTPUT": "pocket_sphinx_out.txt",
     "SPHINX_CONFIG_FOLDER": "pocketsphinx",
     "SPHINX_LANGUAGE_MODEL": "/usr/local/share/pocketsphinx/model/en-us/en-us",
-    "SPHINX_BASE_COMMAND": "pocketsphinx_continuous -inmic yes -logfn /dev/null -hmm /usr/local/share/pocketsphinx/model/en-us/en-us "
+    "SPHINX_BASE_COMMAND": "pocketsphinx_continuous -inmic yes -logfn /dev/null -hmm /usr/local/share/pocketsphinx/model/en-us/en-us ",
+    "WIT_ACCESS_TOKEN": "IDGYEGK3S2S7WCIKURAFG4WW6GHNFJLG",
+    "CONFIDENCE": 0.5
 }
