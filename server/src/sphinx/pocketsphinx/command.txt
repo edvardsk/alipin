@@ -10,4 +10,6 @@ build:
 pocketsphinx_continuous -inmic yes -logfn /dev/null -hmm /usr/local/share/pocketsphinx/model/en-us/en-us -dict /home/edvards_kazlouski/_projects/alipin/server/pocketsphinx/dictionary.dic -lm /home/edvards_kazlouski/_projects/alipin/server/pocketsphinx/model.lm -hyp pocket_sphinx_out.txt
 
 release:
-pocketsphinx_continuous -inmic yes -logfn /dev/null -hmm /usr/local/share/pocketsphinx/model/en-us/en-us -dict /home/edvards_kazlouski/_projects/alipin/server/pocketsphinx/dictionary.dic -lm /home/edvards_kazlouski/_projects/alipin/server/pocketsphinx/model.lm > pocket_sphinx_out.txt
+pocketsphinx_continuous -inmic yes -logfn /dev/null -hmm /usr/local/share/pocketsphinx/model/en-us/en-us -dict /home/edvards_kazlouski/_projects/alipin/server/src/sphinx/pocketsphinx/dictionary.dic -lm /home/edvards_kazlouski/_projects/alipin/server/src/sphinx/pocketsphinx/model.lm > pocket_sphinx_out.txt
+
+
