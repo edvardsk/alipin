@@ -1,4 +1,4 @@
-# alipin
+# Alipin
 
 ### Install
 1. Install node
