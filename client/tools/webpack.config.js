@@ -13,14 +13,14 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /\.(js|jsx|es)$/, loader: 'babel' },
+            { test: /\.(js|jsx|es)$/, loader: 'babel', query: { presets: ['es2015'] } },
             { test: /\.json$/, loader: 'json' },
             { test: /\.json5$/, loader: 'json5' },
             { test: /\.(png|jpg|jpeg|gif)$/, loader: 'url?limit=10000' },
             { test: /\.(ttf|eot|wav|mp3|svg|eot|woff|woff2)$/, loader: 'file?name=[name].[ext][hash]' },
             { test: /\.(wav|mp3)$/, loader: 'file' },
             { test: /\.html/, loader: 'html' },
-            { test: /\.(sass|scss)$/, loader: ExtractTextPlugin.extract('style', 'css!sass') },
+            { test: /\.(sass|scss)$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader') },
             { test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css') }
        ]
     },

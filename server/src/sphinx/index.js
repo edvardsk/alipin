@@ -4,17 +4,15 @@ var Sphinx = require('./adapters/sphinx');
 var Witai = require('./adapters/witai');
 var DataManager = require('./data_manager');
 
-(function () {
-    var sphinx = new Sphinx();
-    var witai = new Witai();
-    var dataManager = new DataManager();
+var sphinx = new Sphinx();
+var witai = new Witai();
+var dataManager = new DataManager();
 
-    var handler = _.bind(dataManager.handleCommand, dataManager);
+var handler = _.bind(dataManager.handleCommand, dataManager);
 
-    sphinx.on(function (maybeCommand) {
-        console.log('---');
-        console.log(maybeCommand);
-        console.log('===');
-        witai.capture(maybeCommand, handler);
-    }).record();
-})();
+sphinx.on(function (maybeCommand) {
+    console.log('---');
+    console.log(maybeCommand);
+    console.log('===');
+    witai.capture(maybeCommand, handler);
+}).record();

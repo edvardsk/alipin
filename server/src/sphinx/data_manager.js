@@ -7,6 +7,8 @@ var twitterService = require('./services/twitter');
 var minskService = require('./services/forecast_minsk');
 var vitebskService = require('./services/forecast_vitebsk');
 
+var websocket = require('../express/websocket');
+
 function DataManager() {
     this.handlers = {};
 
@@ -24,9 +26,7 @@ DataManager.prototype.handleCommand = function (intent) {
     }
 
     this.handlers[intent].exec(function (data) {
-        console.log('---------');
-        console.log(data);
-        console.log('=========');
+        websocket.send(intent, data);
     });
 };
 
