@@ -5,5 +5,15 @@
     "SPHINX_LANGUAGE_MODEL": "/usr/local/share/pocketsphinx/model/en-us/en-us",
     "SPHINX_BASE_COMMAND": "pocketsphinx_continuous -inmic yes -logfn /dev/null -hmm /usr/local/share/pocketsphinx/model/en-us/en-us ",
     "WIT_ACCESS_TOKEN": "IDGYEGK3S2S7WCIKURAFG4WW6GHNFJLG",
-    "CONFIDENCE": 0.5
+    "CONFIDENCE": 0.5,
+    "USER_NAME": "Edvards",
+    "TWITTER_ACCESS_TOKEN": "4875900941-r38588QaFK1RptRj13cJNXUHDrq6SQvvVnrOcN9",
+    "TWITTER_ACCESS_SECRET": "xrM2fCeejI1jQpKwvOevMxckcSpZBSnqEjqgJk2L8dAvU",
+    "TWITTER_CONSUMER_KEY": "dJycErIdbx7h6jpkMKlv0MPb1",
+    "TWITTER_CONSUMER_SECRET": "DyuZ7ubF2HfYVk9fUztGYzJ6UNKOKZsuLdoTKuTluU9fG7nZ8v",
+    "TWITTER_OWNER": "dobrinya_",
+    "TWITTER_TWEETS_COUNT": 10,
+    "FORECAST_API_KEY": "207dc6247db4ac4dd5d9f0a0fd616047",
+    "FORECAST_MINSK_COORDINATES": [53.9000, 27.5667],
+    "FORECAST_VITEBSK_COORDINATES": [55.1833, 30.1667]
 }
