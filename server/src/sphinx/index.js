@@ -14,7 +14,6 @@ var DataManager = require('./data_manager');
     sphinx.on(function (maybeCommand) {
         console.log('---');
         console.log(maybeCommand);
-        console.log(handler);
         console.log('===');
         witai.capture(maybeCommand, handler);
     }).record();

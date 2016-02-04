@@ -10,7 +10,8 @@
   "license": "ISC",
   "main": "./server",
   "scripts": {
-    "serv": "cd ./server && node server.js",
+    "start": "",
+    "build": "./node_modules/.bin/webpack --config ./client/tools/webpack.config.js",
     "test": "mocha ./server/tests/test.js"
   },
   "dependencies": {
@@ -20,8 +21,19 @@
     "request": "^2.65.0"
   },
   "devDependencies": {
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.1",
     "chai": "^3.3.0",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "json-loader": "^0.5.4",
     "mocha": "^2.3.3",
-    "node-wit": "^2.0.0"
+    "node-sass": "^3.4.2",
+    "node-wit": "^2.0.0",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.12",
+    "websocket": "^1.0.22"
   }
 }
