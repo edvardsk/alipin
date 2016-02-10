@@ -1,0 +1,39 @@
+{
+  "name": "personal-assistant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.13.4",
+    "lodash": "^3.10.1",
+    "mumble-js": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-1": "^6.5.0",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "forecast": "^0.2.1",
+    "json-loader": "^0.5.4",
+    "mtwitter": "^1.6.4",
+    "mustache": "^2.2.1",
+    "node-sass": "^3.4.2",
+    "node-wit": "^2.0.0",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.12",
+    "websocket": "^1.0.22"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./server",
+    "build": "./node_modules/.bin/webpack --config ./client/tools/webpack.config.js",
+    "dev": "npm run build && npm run start"
+  },
+  "author": "Edvards Kazlouski",
+  "license": "ISC"
+}
