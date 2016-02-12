@@ -32,7 +32,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server",
     "build": "./node_modules/.bin/webpack --config ./client/tools/webpack.config.js",
-    "dev": "npm run build && npm run start"
+    "dev": "npm run build & npm run start"
   },
   "author": "Edvards Kazlouski",
   "license": "ISC"

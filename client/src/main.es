@@ -4,67 +4,224 @@ import './styles/main.scss';
 import Mumble from 'mumble-js';
  
 // for all options, see the docs
-const mumble = new Mumble({
-    language: 'ru-RU',
-    continuous: true,
-    autoRestart: true,
-    debug: false, // set to true to get some detailed information about what's going on
- 
-    // define some commands using regex or a simple string for exact matching
-    commands: [
-    // {
-    //     name: 'appointment',
-    //     command: /^book (.+) for me (today|tomorrow) at (\d+)$/,
- 
-    //     action: (type, date, hour) => {
-    //         console.log('Making an appointment for %s %s at %d', type, date, (hour - 0) );
-    //     }
-    // }, {
-    //     name: 'google',
-    //     command: /^google (.+) for me\s?(please)?$/,
- 
-    //     action: (query, polite) => {
-    //         if (polite) {
-    //             // google the query
-    //         } else {
-    //             console.log('I will google that for you but only if you say please');
-    //         }
-    //     }
-    // }
-        {
-            name: 'play',
-            command: /проиграй файл (.+)/,
-            action: (fileName) => {
-                console.log(`Trying to play: "${fileName}"`);
+let mumble;
+
+const welcome = () => {
+    mumble = new Mumble({
+        language: 'ru-RU',
+        continuous: false,
+        autoRestart: true,
+        debug: false,
+
+        commands: [
+            {
+                name: 'hello',
+                command: /^(привет|ок) alipin/,
+                action: () => {
+                    console.log('Welcome, black master!');
+                }
             }
-        },
-        {
-            name: 'time',
-            command: /который (сейчас) час/,
-            action: () => {
-                console.log(new Date());
+        ]
+    });
+
+    mumble.start();
+}
+
+// welcome();
+
+const setUserName = () => {
+    mumble = new Mumble({
+        language: 'ru-RU',
+        continuous: false,
+        autoRestart: true,
+        debug: false,
+
+        commands: [
+            {
+                name: 'name',
+                command: /^(меня зовут|я) (.+)/,
+                action: (predicate, userName) => {
+                    console.log(`Hello, ${userName}!`);
+                }
             }
-        }
-    ],
- 
-    // define global callbacks (see docs for all)
-    callbacks: {
-        start: (event) => {
-            console.log('Starting..');
-        },
- 
-        speech: ({ results }) => {
-            for (let j = 0; j < results.length; j++) {
-                let recognized = results[j];
+        ]
+    });
+
+    mumble.start();
+}
+
+// setUserName();
+
+const setTwitterAccount = () => {
+    mumble = new Mumble({
+        language: 'en-US',
+        continuous: false,
+        autoRestart: true,
+        debug: false,
+
+        commands: [
+            {
+                name: 'back',
+                command: /^back/,
+                action: () => {
+                    console.log('Trying to back.');
+                }
+            },
+            {
+                name: 'underscore',
+                command: /^underscore/,
+                action: () => {
+                    console.log('Letter: _;');
+                }
+            },
+            {
+                name: 'letter',
+                command: /^([a-zA-Z0-9]{1})/,
+                action: (letter) => {
+                    console.log(`word: ${letter};`);
+                }
+            },
+            {
+                name: 'next',
+                command: /^next/,
+                action: () => {
+                    console.log('Dismiss twitter validation');
+                }
+            }
+        ],
+
+        callbacks: {
+             speech: ({ results }) => {
+                let recognized = results[results.length - 1];
                 for (let i = 0; i < recognized.length; i++) {
                     console.log(recognized[i].transcript);
                 }
+                console.log('-------');
             }
-            console.log('-------');
         }
-    }
-});
- 
+    });
 
-// start listening
-mumble.start();
+    mumble.start();
+
+}
+
+// setTwitterAccount();
+
+const listenCommands = () => {
+    mumble = new Mumble({
+        language: 'ru-RU',
+        continuous: false,
+        autoRestart: true,
+        debug: false,
+
+        commands: [
+            {
+                name: 'weather_city_day',
+                command: /погода в (.+) (сегодня|завтра)$/,
+                action: (city, day) => {
+                    console.log(`Trying to get weather: ${city} and ${day}`);
+                }
+            },
+            {
+                name: 'weather_city_day_of_weak',
+                command: /погода в (.+) (в|во) (понедельник|вторник|среду|четверг|пятницу|субботу|воскресенье)$/,
+                action: (city, predicate, day) => {
+                    console.log(`Trying to get weather: ${city} at ${day}`);
+                }
+            },
+            {
+                name: 'weather_city',
+                command: /^погода в (.+)/,
+                action: (city) => {
+                    console.log(`Trying to get weather: ${city}`);
+                }
+            },
+            {
+                name: 'weather_day_city',
+                command: /^погода (сегодня|завтра) в (.+)/,
+                action: (day, city) => {
+                    console.log(`Trying to get weather: ${day}: _${city}`);
+                }
+            },
+            {
+                name: 'play',
+                command: /^(проигра(ть|й)|открой) файл (.+)/,
+                action: (command, ending, fileName) => {
+                    console.log(`Trying to play: "${fileName.toLowerCase().replace(/ /g,'')}"`);
+                }
+            },
+            {
+                name: 'stop',
+                command: /^(останов(и|ить)|прекрат(и|ить)) проигрывание ?(файла)?/,
+                action: (command) => {
+                    console.log('Trying to stop playout');
+                }
+            },
+            {
+                name: 'open_web_page',
+                command: /^откр(ыть|ой) (сайт|страницу) (.+)/,
+                action: (ending, webpage, fileName) => {
+                    console.log(`Trying to open: "${fileName}"`);
+                }
+            },
+            {
+                name: 'open',
+                command: /^откр(ыть|ой) (.+)/,
+                action: (ending, fileName) => {
+                    console.log(`Generic open: "${fileName}"`);
+                }
+            },
+            {
+                name: 'show_tweets',
+                command: /^(покажи|отобраз(и|ить)) ?(мои)? (твиты)/,
+                action: (webpage, fileName) => {
+                    console.log('Trying to show tweets');
+                }
+            },
+            {
+                name: 'disco',
+                command: /(давай)? ?устро(им|й|ить) дискотеку$/,
+                action: () => {
+                    console.log('Let start disco!!!!!!!');
+                }
+            },
+            {
+                name: 'close_web_page',
+                command: /^закрой (сайт|страницу) (.+)/,
+                action: (webpage, fileName) => {
+                    console.log(`Trying to close: "${fileName}"`);
+                }
+            },
+            {
+                name: 'time',
+                command: /^(который (сейчас)? ?час)|(сколько (сейчас)? ?времени)/,
+                action: () => {
+                    console.log(new Date());
+                }
+            }
+        ],
+     
+        callbacks: {
+            start: (event) => {
+                console.log('Starting...');
+            },
+
+            end: () => {
+                console.log('Ending...');
+            },
+
+            speech: ({ results }) => {
+                let recognized = results[results.length - 1];
+                for (let i = 0; i < recognized.length; i++) {
+                    console.log(recognized[i].transcript);
+                }
+                console.log('-------');
+            }
+        }
+    });
+
+    mumble.start();
+}
+
+listenCommands();
+window.mumble = mumble;

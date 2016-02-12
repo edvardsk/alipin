@@ -25,6 +25,8 @@ module.exports = {
        ]
     },
 
+    watch: true,
+
     plugins: [
         new ExtractTextPlugin('bundle.css'),
         new webpack.NoErrorsPlugin()
