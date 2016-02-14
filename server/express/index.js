@@ -8,6 +8,8 @@ var app = express();
 var server;
 
 app.use('/build', express.static(path.join(__dirname, '../../client/build')));
+app.use('/source', express.static(path.join(__dirname, '../../client/source')));
+// app.use('/modules', express.static(path.join(__dirname, '../../node_modules')));
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../../client/index.html'));

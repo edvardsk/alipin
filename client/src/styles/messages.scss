@@ -1,0 +1,10 @@
+$animation-duration: 2s;
+
+$small-animating-message-size: 100px;
+$normal-animating-message-size: 500px;
+$large-animating-message-size: 750px;
+
+.small-animated-message {
+    transition: transform $animation-duration;
+    transform: translate3d(0, -$small-animating-message-size, 0);
+}

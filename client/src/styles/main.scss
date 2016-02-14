@@ -1,3 +1,9 @@
 body {
     background: #12121D;
+    margin: 0;
+
+    color: #e9e9eD;
+
+    @import './messages';
+    @import './header';
 }
