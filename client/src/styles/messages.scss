@@ -4,7 +4,40 @@ $small-animating-message-size: 100px;
 $normal-animating-message-size: 500px;
 $large-animating-message-size: 750px;
 
+$small-message-width: 500px;
+
+.small-animated-message, .normal-animating-message, .header-animation {
+    transition: transform $animation-duration, opacity $animation-duration;
+}
+
 .small-animated-message {
-    transition: transform $animation-duration;
     transform: translate3d(0, -$small-animating-message-size, 0);
+}
+
+.normal-animating-message {
+    transform: translate3d(0, -$normal-animating-message-size, 0);
+}
+
+.header-animation {
+    transform: translate3d(0, $normal-animating-message-size, 0);
+}
+
+.small-message {
+    font-size: $small-message-font-size;
+    text-align: center;
+    line-height: $small-animating-message-size;
+}
+
+.greeting, .parting {
+    width: $small-message-width;
+    height: $small-animating-message-size;
+    margin: 0 auto;
+}
+
+.greeting {
+    background-color: $orange-message;
+}
+
+.parting {
+    background-color: $blue-message;
 }

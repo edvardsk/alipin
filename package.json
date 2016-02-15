@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.13.4",
+    "jquery": "^2.2.0",
     "jquery-deferred": "^0.3.0",
     "lodash": "^3.10.1",
     "markup-js": "^1.5.21",

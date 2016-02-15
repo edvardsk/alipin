@@ -1,1 +1,5 @@
-export default '<div>Hi, {name}!</div>';
+export default {
+    node: 'div',
+    class: 'small-animated-message small-message greeting',
+    template: '<div>Привет, {{name}}!</div>'
+};

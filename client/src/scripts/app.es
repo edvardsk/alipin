@@ -1,23 +1,22 @@
 import { Deferred } from 'jquery-deferred';
 import SpeechAdapter from './adapters/speech_adapter';
-import NetworkAdapter from './adapters/network_adapter';
 import Renderer from './renderer/renderer';
+import NetworkAdapter from './adapters/network_adapter';
 
 export default class App {
     constructor(container) {
-        this.speechAdapter = new SpeechAdapter(new Renderer(container));
-        this.networkAdapter = new NetworkAdapter();
+        Renderer.init(container);
     }
 
     init() {
         const dfd = new Deferred();
 
-        this.networkAdapter.loadInitialData().then(() => { dfd.resolve(); });
+        NetworkAdapter.loadInitialData().then(() => { dfd.resolve(); });
 
         return dfd.promise();
     }
 
     start() {
-        this.speechAdapter.waitGreeeting();
+        SpeechAdapter.waitGreeeting();
     }
 }

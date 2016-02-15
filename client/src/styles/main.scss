@@ -1,8 +1,21 @@
-body {
-    background: #12121D;
-    margin: 0;
+$body-background: #12121D;
+$orange-message: #FF6E00;
+$blue-message: #3489CD;
+$body-color: #E9E9ED;
+$header-background: #333;
+$small-message-font-size: 30px;
 
-    color: #e9e9eD;
+@font-face {
+  font-family: 'pupcat';
+  src: url('../../source/pupcat.ttf')  format('truetype');
+}
+
+body {
+    background: $body-background;
+    margin: 0;
+    font-family: 'pupcat';
+
+    color: $body-color;
 
     @import './messages';
     @import './header';

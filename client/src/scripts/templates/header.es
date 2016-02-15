@@ -1,5 +1,5 @@
 export default {
     node: 'header',
-    class: 'small-animated-message header',
-    template: '<div>HEADER</div>'
+    class: 'header-animation header',
+    template: '<div><canvas id="audio-output" class="audio"></canvas></div>'
 };

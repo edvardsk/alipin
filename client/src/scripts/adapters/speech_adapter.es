@@ -1,11 +1,9 @@
 import Mumble from 'mumble-js';
-import { commands, adapter } from './commands_adapter';
+import { commands } from './commands_adapter';
 
-export default class SpeechAdapter {
+class SpeechAdapter {
 
-    constructor(container) {
-        adapter.init(container);
-
+    constructor() {
         this.greeting = new Mumble({
             language: 'ru-RU',
             continuous: false,
@@ -14,10 +12,19 @@ export default class SpeechAdapter {
 
             commands: commands.greeting
         });
+
+        this.mainCommands = new Mumble({
+            language: 'ru-RU',
+            continuous: false,
+            autoRestart: true,
+            debug: true,
+
+            commands: commands.mainCommands
+        });
     }
 
     waitGreeeting() {
-        // this.greeting.start();
+        this.greeting.start();
         return this;
     }
 
@@ -26,7 +33,21 @@ export default class SpeechAdapter {
         return this;
     }
 
+    startMainCommands() {
+        this.mainCommands.start();
+        return this;
+    }
+
+    stopMainCommands() {
+        this.mainCommands.stop();
+        return this;
+    }
+
 }
+
+const speechAdapter = new SpeechAdapter();
+
+export default speechAdapter;
 
 
 /*
