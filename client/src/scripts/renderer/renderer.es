@@ -5,6 +5,8 @@ import HeaderTemplate from '../templates/header';
 import GreetingTemplate from '../templates/greeting';
 import PartingTemplate from '../templates/parting';
 
+import AudioVisualizator from './audio_visualizator';
+
 class Renderer {
     constructor() {
         this.headerIsShown = false;
@@ -17,22 +19,24 @@ class Renderer {
         this.container = container;
     }
 
-    showMessage(component, data, isHeader) {
-        const dfd = new Deferred();
-
+    createElement(component, data) {
         const insides = Mark.up(component.template, data);
         const container = document.createElement(component.node);
         container.className = component.class;
         container.innerHTML = insides;
 
+        return container
+    }
+
+    showMessage(component, data) {
+        const dfd = new Deferred();
+
+        const container = this.createElement(component, data);
+
         this.container.appendChild(container);
 
         const listener = () => {
-            if (isHeader) {
-                this.header = container;
-            } else {
-                this.lastMessage = container;
-            }
+            this.lastMessage = container;
 
             container.removeEventListener('transitionend', listener);
             dfd.resolve();
@@ -50,39 +54,33 @@ class Renderer {
     }
 
     showHeader() {
-        const dfd = new Deferred();
-
         if (this.headerIsShown) {
-            return dfd.resolve().promise();
+            return (new Deferred()).resolve().promise();
         }
 
         console.log('show header');
         this.headerIsShown = true;
-        this.showMessage(HeaderTemplate, {}, true).then(() => {
-            this.canvas = document.getElementById('audio-output');
-            dfd.resolve();
-        });
+        const header = this.createElement(HeaderTemplate, {});
+        this.container.appendChild(header);
 
-        return dfd.promise();
+        this.header = header;
+        this.canvas = document.getElementById('audio-output');
+
+        AudioVisualizator.setCanvas(this.canvas);
+
+        return (new Deferred()).resolve().promise();
     }
 
     hideHeader() {
         console.log('hide header.');
-        const dfd = new Deferred();
-        this.header.style.transform = '';
-        // this.header.style.opacity = '0';
 
-        const listener = () => {
-            console.log('transition end');
-            this.header.removeEventListener('transitionend', listener);
-            this.container.removeChild(this.header);
-            this.header = null;
-            this.headerIsShown = false;
-            dfd.resolve();
-        };
+        this.container.removeChild(this.header);
+        this.canvas = null;
+        this.header = null;
+        this.headerIsShown = false;
+        AudioVisualizator.removeCanvas();
 
-        this.header.addEventListener('transitionend', listener);
-        return dfd.promise();
+        return (new Deferred()).resolve().promise();
     }
 
     hideLastMessage() {
@@ -110,10 +108,6 @@ class Renderer {
         return dfd.promise();
     }
 
-    renderAudio(data) {
-
-    }
-
     // COMMMANDS
     greeting(data) {
         console.log('greeting');
@@ -136,4 +130,5 @@ class Renderer {
 }
 
 const renderer = new Renderer();
+
 export default renderer;

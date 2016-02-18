@@ -2,6 +2,7 @@ import Renderer from '../renderer/renderer';
 import Speaker from './speaker';
 import Constants from '../constants/constants';
 import SpeechAdapter from './speech_adapter';
+import AudioVisualizator from '../renderer/audio_visualizator';
 
 class CommandsAdapter {
 
@@ -19,6 +20,7 @@ class CommandsAdapter {
 
                 this.currentTimeout = setTimeout(() => {
                     Renderer.hideLastMessage();
+                    AudioVisualizator.stopRenderAudio();
                 }, Constants.SMALL_MESSAGE_TIMEOUT);
             });
         });

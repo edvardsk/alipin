@@ -18,10 +18,6 @@ $small-message-width: 500px;
     transform: translate3d(0, -$normal-animating-message-size, 0);
 }
 
-.header-animation {
-    transform: translate3d(0, $normal-animating-message-size, 0);
-}
-
 .small-message {
     font-size: $small-message-font-size;
     text-align: center;

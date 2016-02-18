@@ -1,7 +1,7 @@
 import { Deferred } from 'jquery-deferred';
 import NetworkAdapter from './network_adapter';
 import Constants from '../constants/constants';
-import Renderer from '../renderer/renderer';
+import AudioVisualizator from '../renderer/audio_visualizator';
 
 class Speaker {
 
@@ -10,14 +10,19 @@ class Speaker {
 
         const context = new AudioContext();
         let sound;
-        
+
         NetworkAdapter.getSound(url).then( (response) => {
             context.decodeAudioData(response, (buffer) => {
-                setTimeout(Renderer.renderAudio(buffer.getChannelData(0)), 0);
+
                 sound = buffer;
                 const playSound = context.createBufferSource();
                 playSound.buffer = sound;
                 playSound.connect(context.destination);
+
+                setTimeout(AudioVisualizator.renderAudio({
+                    source: playSound,
+                    context
+                }), 0);
                 playSound.start(0);
                 dfd.resolve();
             });

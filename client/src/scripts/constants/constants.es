@@ -12,5 +12,12 @@ export default {
         ACAPELA_GROUP_VOICE: 'alyona22k'
         //'willbadguy22k'
     },
-    USER: { name: 'Андрей' }
+    USER: { name: 'Андрей' },
+
+    DRAW_INTERVAL: 1000 / 24,
+    CANVAS_WIDTH: 480,
+    CANVAS_HEIGHT: 480,
+
+    CIRCLES_COUNT: 30,
+    CANVAS_HUE: 225
 };
