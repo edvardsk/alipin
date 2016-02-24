@@ -4,6 +4,7 @@ export default {
         PARTING: 'Пока, ${name}'
     },
     SMALL_MESSAGE_TIMEOUT: 3000,
+    NORMAL_MESSAGE_TIMEOUT: 5000,
     AcapelaGroup: {
         ACAPELA_GROUP_API_URL: 'http://vaas.acapela-group.com/Services/UrlMaker?jsoncallback=?',
         ACAPELA_GROUP_APP: 'EVAL_8759765',

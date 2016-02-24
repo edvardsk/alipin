@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Renderer from '../renderer/renderer';
 import Speaker from './speaker';
 import Constants from '../constants/constants';
@@ -8,7 +9,27 @@ class CommandsAdapter {
 
     constructor() {
         this.currentTimeout = null;
+        this.isActionBlocked = false;
     }
+
+    blockActions = () => {
+        this.isActionBlocked = true;
+
+        setTimeout(() => {
+            this.unBlockActions();
+        }, Constants.NORMAL_MESSAGE_TIMEOUT);
+    };
+
+    unBlockActions = () => {
+        this.isActionBlocked = false;
+    };
+
+    command = (action) => {
+        if (!this.isActionBlocked) {
+            action();
+            this.blockActions();
+        }
+    };
 
     greeting = () => {
         Renderer.showHeader().then(() => {
@@ -21,7 +42,7 @@ class CommandsAdapter {
                 this.currentTimeout = setTimeout(() => {
                     Renderer.hideLastMessage();
                     AudioVisualizator.stopRenderAudio();
-                }, Constants.SMALL_MESSAGE_TIMEOUT);
+            }, Constants.SMALL_MESSAGE_TIMEOUT);
             });
         });
     };
@@ -33,6 +54,7 @@ class CommandsAdapter {
         Renderer.hideLastMessage().then(() => {
             Speaker.parting(Constants.USER).then(() => {
                 Renderer.parting(Constants.USER).then(() => {
+
                     setTimeout(() => {
                         Renderer.hideLastMessage().then(() => {
                             AudioVisualizator.stopRenderAudio();
@@ -43,6 +65,7 @@ class CommandsAdapter {
                             });
                         });
                     }, Constants.SMALL_MESSAGE_TIMEOUT);
+
                 });
             });
         });
@@ -58,15 +81,15 @@ export const commands = {
     greeting: [
         {
             name: 'hello',
-            command: /^(привет|ок|окей|Привет) ?(Альпен|альпин|алиби|Алексин|Аникин|алейкум)?/,
-            action: adapter.greeting
+            command: /(привет|ок|окей|Привет) ?(Альпен|альпин|алиби|Алексин|Аникин|алейкум)?/,
+            action: _.partial(adapter.command, adapter.greeting)
         }
     ],
     mainCommands: [
         {
             name: 'end',
             command: /(Пока|Прощай|пока|прощай) ?(Альпен|альпин|алиби)?/,
-            action: adapter.parting
+            action: _.partial(adapter.command, adapter.parting)
         }
     ]
 };

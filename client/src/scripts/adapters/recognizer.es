@@ -10,15 +10,45 @@ export default class Recognizer {
 
         this.recognition.onresult = this.onRecognize;
         this.recognition.onerror = this.onError;
-        this.autoRestart = autoRestart;
+        this.recognition.onend = this.onEnd;
 
+        this.autoRestart = autoRestart;
         this.commands = commands; // array: command - regexp, action - method
     }
 
-    onRecognize = (event) => {
-        const result = _.last(event.results);
+    setCommands(commands) {
+        this.commands = commands;
+    }
 
-        if (!result.isFinal) { return; }
+    onEnd = (event) => {
+        console.log('on end');
+
+        if (this.autoRestart) {
+            this.restart();
+        }
+    };
+
+    restart() {
+        this.recognition.stop();
+        this.recognition.abort();
+        setTimeout(() => {
+            this.recognition.start();
+        }, 2000);
+    }
+
+    onError = (event) => {
+        console.log('on error');
+        // console.error(event);
+
+        if (this.autoRestart) {
+            this.restart();
+        }
+    };
+
+    onRecognize = (event) => {
+        // console.log(event);
+
+        const result = _.last(event.results);
 
         _.forEach(result, ({ transcript }) => {
             _.forEach(this.commands, ({ command, action }) => {
@@ -30,20 +60,14 @@ export default class Recognizer {
         });
     };
 
-    onError = (event) => {
-        console.error(event);
-
-        if (this.autoRestart) {
-            this.stop();
-            this.start();
-        }
-    };
-
     start() {
+        console.log('start');
         this.recognition.start();
     }
 
     stop() {
+        console.log('stop');
         this.recognition.stop();
+        this.recognition.abort();
     }
 };

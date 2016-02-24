@@ -13,12 +13,12 @@ class SpeechAdapter {
         //     commands: commands.greeting
         // });
 
-        this.greeting = new Recognizer({
+        this.recognizer = new Recognizer({
             interimResults: true,
             continuous: true,
             autoRestart: true,
             language: 'ru',
-            commands: commands.greeting
+            commands: []
         });
 
         // this.mainCommands = new Mumble({
@@ -30,32 +30,30 @@ class SpeechAdapter {
         //     commands: commands.mainCommands
         // });
 
-        this.mainCommands = new Recognizer({
-            language: 'ru',
-            continuous: true,
-            autoRestart: true,
-            interimResults: true,
-            commands: commands.mainCommands
-        });
+    }
+
+    start() {
+        this.recognizer.start();
+        return this;
     }
 
     waitGreeeting() {
-        this.greeting.start();
+        this.recognizer.setCommands(commands.greeting);
         return this;
     }
 
     stopGreeting() {
-        this.greeting.stop();
+        this.recognizer.setCommands([]);
         return this;
     }
 
     startMainCommands() {
-        this.mainCommands.start();
+        this.recognizer.setCommands(commands.mainCommands);
         return this;
     }
 
     stopMainCommands() {
-        this.mainCommands.stop();
+        this.recognizer.setCommands([]);
         return this;
     }
 
