@@ -35,6 +35,7 @@ class CommandsAdapter {
                 Renderer.parting(Constants.USER).then(() => {
                     setTimeout(() => {
                         Renderer.hideLastMessage().then(() => {
+                            AudioVisualizator.stopRenderAudio();
                             Renderer.hideHeader().then(() => {
                                 SpeechAdapter
                                     .stopMainCommands()
@@ -57,7 +58,7 @@ export const commands = {
     greeting: [
         {
             name: 'hello',
-            command: /^(привет|ок|окей) ?(Альпен|альпин|алиби)?/,
+            command: /^(привет|ок|окей|Привет) ?(Альпен|альпин|алиби|Алексин|Аникин|алейкум)?/,
             action: adapter.greeting
         }
     ],

@@ -45,6 +45,8 @@ class AudioVisualizator {
         this.ctx.fillStyle = 'rgba(18, 18, 29, 1)';
         this.ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
 
+        let hue = Constants.CANVAS_HUES[3];
+
         for (let i = 0; i < Constants.CIRCLES_COUNT; i++) {
 
             totals[i] = {
@@ -58,8 +60,8 @@ class AudioVisualizator {
             totals[i].ratio = totals[i].magnitude / (this.maxMagnitude / Constants.CIRCLES_COUNT);
             totals[i].strength = totals[i].ratio * Constants.CANVAS_HEIGHT / Constants.CIRCLES_COUNT;
 
-            this.ctx.strokeStyle = 'hsla(' + Constants.CANVAS_HUE + ', 50%, 50%, ' + ((1 / Constants.CIRCLES_COUNT) + 0.1) + ')';
-            this.ctx.fillStyle = 'hsla(' + Constants.CANVAS_HUE + ', 50%, 50%, ' + (1 / Constants.CIRCLES_COUNT) + ')';
+            this.ctx.strokeStyle = 'hsla(' + hue + ', 50%, 50%, ' + ((1 / Constants.CIRCLES_COUNT) + 0.1) + ')';
+            this.ctx.fillStyle = 'hsla(' + hue + ', 50%, 50%, ' + (1 / Constants.CIRCLES_COUNT) + ')';
             this.ctx.beginPath();
             this.ctx.arc(Constants.CANVAS_WIDTH / 2, Constants.CANVAS_HEIGHT / 2, totals[i].strength, 0, Math.PI * 2, true);
             this.ctx.stroke();
@@ -69,7 +71,7 @@ class AudioVisualizator {
         }
 
         ratio = totalMagnitude / this.maxMagnitude;
-        this.ctx.fillStyle = 'hsla(' + Constants.CANVAS_HUE + ', 50%, 50%, ' + (0.005 * ratio) + ')';
+        this.ctx.fillStyle = 'hsla(' + hue + ', 50%, 50%, ' + (0.005 * ratio) + ')';
         this.ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
     };
 

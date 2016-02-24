@@ -8,7 +8,7 @@ class NetworkAdapter {
 
         setTimeout(() => {
             dfd.resolve();
-        }, 1000);
+        }, 100);
 
         return dfd.promise();
     }

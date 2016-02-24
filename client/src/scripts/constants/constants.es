@@ -19,5 +19,5 @@ export default {
     CANVAS_HEIGHT: 480,
 
     CIRCLES_COUNT: 30,
-    CANVAS_HUE: 225
+    CANVAS_HUES: [ 0, 120, 170, 225, 300 ]
 };

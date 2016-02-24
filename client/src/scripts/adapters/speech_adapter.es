@@ -1,24 +1,40 @@
-import Mumble from 'mumble-js';
+import Recognizer from './recognizer';
 import { commands } from './commands_adapter';
 
 class SpeechAdapter {
 
     constructor() {
-        this.greeting = new Mumble({
-            language: 'ru-RU',
-            continuous: false,
-            autoRestart: true,
-            debug: false,
+        // this.greeting = new Mumble({
+        //     language: 'ru-RU',
+        //     continuous: false,
+        //     autoRestart: true,
+        //     debug: false,
 
+        //     commands: commands.greeting
+        // });
+
+        this.greeting = new Recognizer({
+            interimResults: true,
+            continuous: true,
+            autoRestart: true,
+            language: 'ru',
             commands: commands.greeting
         });
 
-        this.mainCommands = new Mumble({
-            language: 'ru-RU',
-            continuous: false,
-            autoRestart: true,
-            debug: true,
+        // this.mainCommands = new Mumble({
+        //     language: 'ru-RU',
+        //     continuous: false,
+        //     autoRestart: true,
+        //     debug: true,
 
+        //     commands: commands.mainCommands
+        // });
+
+        this.mainCommands = new Recognizer({
+            language: 'ru',
+            continuous: true,
+            autoRestart: true,
+            interimResults: true,
             commands: commands.mainCommands
         });
     }
