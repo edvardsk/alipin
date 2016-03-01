@@ -5,9 +5,14 @@ $normal-animating-message-size: 500px;
 $large-animating-message-size: 750px;
 
 $small-message-width: 500px;
+$video-message-width: 540px;
 
 .small-animated-message, .normal-animating-message, .header-animation {
     transition: transform $animation-duration, opacity $animation-duration;
+}
+
+.normal-animating-message{
+    transform: translate3d(0, -$normal-animating-message-size, 0);
 }
 
 .small-animated-message {
@@ -24,7 +29,45 @@ $small-message-width: 500px;
     line-height: $small-animating-message-size;
 }
 
-.greeting, .parting {
+.normal-message {
+    font-size: $normal-message-font-size;
+    line-height: $normal-animating-message-size;
+    width: $large-animating-message-size;
+    height: $normal-animating-message-size;
+
+    margin: 250px auto 0 auto;
+}
+
+.tweets {
+    margin-top: 20px;
+
+    li {
+        background-color: $blue-message;
+        list-style: none;
+        height: 70px;
+        margin-bottom: 20px;
+        color: black;
+
+        img {
+            position: absolute;
+            display: inline-block;
+
+            margin: 10px 0 0 10px;
+        }
+
+        label {
+            position: absolute;
+            left: 120px;
+            font-family: initial;
+            display: inline-block;
+            height: 70px;
+            line-height: 25px;
+            margin-top: 10px;
+        }
+    }
+}
+
+.greeting, .parting, .time{
     width: $small-message-width;
     height: $small-animating-message-size;
     margin: 0 auto;
@@ -32,6 +75,10 @@ $small-message-width: 500px;
 
 .greeting {
     background-color: $orange-message;
+}
+
+.time {
+    background-color: $blue-message;
 }
 
 .parting {

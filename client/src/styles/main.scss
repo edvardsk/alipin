@@ -1,9 +1,11 @@
 $body-background: #12121D;
 $orange-message: #FF6E00;
+$usual-message: #FF7777;
 $blue-message: #3489CD;
 $body-color: #E9E9ED;
 $grey-background: #333;
 $small-message-font-size: 30px;
+$normal-message-font-size: 18px;
 
 @font-face {
   font-family: 'pupcat';
@@ -19,4 +21,5 @@ body {
 
     @import './messages';
     @import './header';
+    @import './video-player';
 }

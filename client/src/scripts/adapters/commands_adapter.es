@@ -4,6 +4,7 @@ import Speaker from './speaker';
 import Constants from '../constants/constants';
 import SpeechAdapter from './speech_adapter';
 import AudioVisualizator from '../renderer/audio_visualizator';
+import NetworkAdapter from './network_adapter';
 
 class CommandsAdapter {
 
@@ -24,9 +25,10 @@ class CommandsAdapter {
         this.isActionBlocked = false;
     };
 
-    command = (action) => {
+    command = (action, ...args) => {
         if (!this.isActionBlocked) {
-            action();
+            Speaker.stopPlayAudio();
+            action(...args);
             this.blockActions();
         }
     };
@@ -36,7 +38,6 @@ class CommandsAdapter {
             Speaker.greeting(Constants.USER).then(() => {
                 Renderer.greeting(Constants.USER);
                 SpeechAdapter
-                    .stopGreeting()
                     .startMainCommands();
 
                 this.currentTimeout = setTimeout(() => {
@@ -60,12 +61,96 @@ class CommandsAdapter {
                             AudioVisualizator.stopRenderAudio();
                             Renderer.hideHeader().then(() => {
                                 SpeechAdapter
-                                    .stopMainCommands()
                                     .waitGreeeting();
                             });
                         });
                     }, Constants.SMALL_MESSAGE_TIMEOUT);
 
+                });
+            });
+        });
+    };
+
+    time = () => {
+        const date = new Date();
+
+        const dateTime = {
+            hours: date.getHours(),
+            minutes: date.getMinutes()
+        };
+
+        Renderer.hideLastMessage().then(() => {
+            Speaker.time(dateTime).then(() => {
+                Renderer.time(dateTime).then(() => {
+                    setTimeout(() => {
+                        Renderer.hideLastMessage();
+                        AudioVisualizator.stopRenderAudio();
+                    }, Constants.SMALL_MESSAGE_TIMEOUT);
+                });
+            });
+        });
+    };
+
+    openWebpage = (open, page) => {
+        Renderer.hideLastMessage(true).then(() => {
+            Speaker.openWebpage(page).then(() => {
+                Renderer.webpage(Constants.WEB_PAGE.replace('${page}', page)).then(() => {
+                    setTimeout(() => {
+                        AudioVisualizator.stopRenderAudio();
+                    }, Constants.SMALL_MESSAGE_TIMEOUT);
+                });
+            });
+        });
+    };
+
+    closeWebpage = () => {
+        if (!Renderer.window) { return; }
+
+        Renderer.hideLastMessage().then(() => {
+            Speaker.closeWebpage().then(() => {
+                setTimeout(() => {
+                    AudioVisualizator.stopRenderAudio();
+                }, Constants.SMALL_MESSAGE_TIMEOUT);
+            });
+        });
+    };
+
+    openFile = (action, file) => {
+        const fileName = Constants.MEDIA_FILE_PATH.replace('${fileName}', file.replace(/ /g,'').toLowerCase());
+        console.log(fileName);
+
+        this.closeFile();
+
+        if (fileName.match(/.(mp3|wav)$/)) {
+            // play audio file
+            Speaker.playAudio(fileName);
+        } else if (fileName.match(/.(mp4|avi)$/)) {
+            // play video file
+            Renderer.hideLastMessage().then(() => {
+                Renderer.playVideo(fileName);
+            });
+        }
+    };
+
+    closeFile = () => {
+        console.log('close file');
+
+        Renderer.hideLastMessage().then(() => {
+            Speaker.stopPlayAudio().then(() => {
+                AudioVisualizator.stopRenderAudio();
+            });
+        });
+    };
+
+    showTweets = () => {
+        Renderer.hideLastMessage().then(() => {
+            NetworkAdapter.loadTweets().then((tweets) => {
+                Speaker.showTweets();
+                Renderer.showTweets({tweets}).then(() => {
+                    setTimeout(() => {
+                        Renderer.hideLastMessage();
+                        AudioVisualizator.stopRenderAudio();
+                    }, Constants.LARGE_MESSAGE_TIMEOUT);
                 });
             });
         });
@@ -78,20 +163,51 @@ export const adapter = new CommandsAdapter();
 window.adapter = adapter;
 
 export const commands = {
-    greeting: [
-        {
-            name: 'hello',
-            command: /(привет|ок|окей|Привет) ?(Альпен|альпин|алиби|Алексин|Аникин|алейкум)?/,
-            action: _.partial(adapter.command, adapter.greeting)
+    greeting: {
+        'привет :name': {
+            regexp: /^привет (алейкум|Алекс|олефин|алекян)/,
+            callback: _.partial(adapter.command, adapter.greeting)
         }
-    ],
-    mainCommands: [
-        {
-            name: 'end',
-            command: /(Пока|Прощай|пока|прощай) ?(Альпен|альпин|алиби)?/,
-            action: _.partial(adapter.command, adapter.parting)
+    },
+    mainCommands: {
+        // bye
+        'пока :name': {
+            regexp: /^пока (алейкум|Алекс|олефин|алекян)/,
+            callback: _.partial(adapter.command, adapter.parting)
+        },
+
+        // time
+        ':question сейчас :time': {
+            regexp: /^(который|сколько) сейчас (час|времени)/,
+            callback: _.partial(adapter.command, adapter.time)
+        },
+
+        // web pages
+        'открой :page :address': {
+            regexp: /^открой (сайт|страницу) (.+)/,
+            callback: _.partial(adapter.command, adapter.openWebpage)
+        },
+        'закрой :page': {
+            regexp: /^закрой (сайт|страницу)/,
+            callback: _.partial(adapter.command, adapter.closeWebpage)
+        },
+
+        // files
+        ':action файл :file': {
+            regexp: /^(проиграй|открой) файл (.+)/,
+            callback: _.partial(adapter.command, adapter.openFile)
+        },
+        'останови проигрывание файла': _.partial(adapter.command, adapter.closeFile),
+        'закрой файл': _.partial(adapter.command, adapter.closeFile),
+
+        // tweets
+        'покажи :name': {
+            regexp: /^покажи (цветы|клипы)/,
+            callback: _.partial(adapter.command, adapter.showTweets)
         }
-    ]
+
+        // weather
+    }
 };
 
 export default {

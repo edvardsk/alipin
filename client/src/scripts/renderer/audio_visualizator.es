@@ -93,12 +93,27 @@ class AudioVisualizator {
 
     stopRenderAudio() {
         this.stop = true;
+        this.ctx.fillStyle = 'rgba(18, 18, 29, 1)';
+        this.ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
     }
 
     setCanvas(canvas) {
+        this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.ctx.canvas.width = Constants.CANVAS_WIDTH;
         this.ctx.canvas.height = Constants.CANVAS_HEIGHT;
+    }
+
+    showCanvas() {
+        if (this.canvas) {
+            this.canvas.style.opacity = '1';
+        }
+    }
+
+    hideCanvas() {
+        if (this.canvas) {
+            this.canvas.style.opacity = '0';
+        }
     }
 
     removeCanvas() {

@@ -4,6 +4,8 @@ import { Deferred } from 'jquery-deferred';
 import HeaderTemplate from '../templates/header';
 import GreetingTemplate from '../templates/greeting';
 import PartingTemplate from '../templates/parting';
+import DateTimeTemplate from '../templates/datetime';
+import TweetsTemplate from '../templates/tweets';
 
 import AudioVisualizator from './audio_visualizator';
 
@@ -83,8 +85,16 @@ class Renderer {
         return (new Deferred()).resolve().promise();
     }
 
-    hideLastMessage() {
+    hideLastMessage(saveWindow) {
         console.log('hide last message');
+
+        if (!saveWindow && this.window) {
+            this.window.close();
+        }
+
+        if (this.video) {
+            this.closeVideo();
+        }
 
         if (!this.lastMessage) {
             return (new Deferred()).resolve().promise();
@@ -97,6 +107,9 @@ class Renderer {
 
         const listener = () => {
             console.log('transition end');
+            if (!this.lastMessage) {
+                dfd.resolve();
+            }
             this.lastMessage.removeEventListener('transitionend', listener);
             this.container.removeChild(this.lastMessage);
             this.lastMessage = null;
@@ -127,6 +140,56 @@ class Renderer {
 
         return dfd.promise();
     }
+
+    // date === { hours, minutes }
+    time(date) {
+        console.log('date');
+        const dfd = new Deferred();
+
+        this.showMessage(DateTimeTemplate, date).then(() => { dfd.resolve(); });
+
+        return dfd.promise();
+    }
+
+    webpage(page) {
+        console.log(page);
+
+        const dfd = new Deferred();
+
+        if (this.window) {
+            this.window.location = page;
+        } else {
+            this.window = window.open(page);
+        }
+
+        return dfd.promise();
+    }
+
+    playVideo(fileName) {
+        const video = document.createElement('video');
+        video.autoplay = true;
+
+        video.className = 'video-player';
+        video.src = fileName;
+        this.container.appendChild(video);
+
+        this.video = video;
+    }
+
+    closeVideo() {
+        this.container.removeChild(this.video);
+        this.video = null;
+    }
+
+    showTweets(data) {
+        console.log(data);
+        const dfd = new Deferred();
+
+        this.showMessage(TweetsTemplate, data).then(() => { dfd.resolve(); });
+
+        return dfd.promise();
+    }
+
 }
 
 const renderer = new Renderer();

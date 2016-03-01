@@ -1,10 +1,17 @@
 export default {
     SpeakAudioTemplates: {
         GREETING: 'Привет, ${name}!',
-        PARTING: 'Пока, ${name}'
+        PARTING: 'Пока, ${name}',
+        TIME: 'Сейчас: ${hours}:${minutes}',
+        WEBPAGE: 'Страница: ${page} открыта',
+        CLOSE_WEBPAGE: 'Веб-страница закрыта',
+        SHOW_TWEETS: 'Последние новости загруженны'
     },
+    MEDIA_FILE_PATH: '/media/${fileName}',
+    WEB_PAGE: 'http://www.${page}',
     SMALL_MESSAGE_TIMEOUT: 3000,
     NORMAL_MESSAGE_TIMEOUT: 5000,
+    LARGE_MESSAGE_TIMEOUT: 30000,
     AcapelaGroup: {
         ACAPELA_GROUP_API_URL: 'http://vaas.acapela-group.com/Services/UrlMaker?jsoncallback=?',
         ACAPELA_GROUP_APP: 'EVAL_8759765',
@@ -13,7 +20,8 @@ export default {
         ACAPELA_GROUP_VOICE: 'alyona22k'
         //'willbadguy22k'
     },
-    USER: { name: 'Андрей' },
+    TWEETS_API: '/tweets',
+    USER: { name: 'Эдвардс' },
 
     DRAW_INTERVAL: 1000 / 24,
     CANVAS_WIDTH: 480,

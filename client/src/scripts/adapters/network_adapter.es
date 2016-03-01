@@ -1,8 +1,9 @@
 import { Deferred } from 'jquery-deferred';
-import { getJSON } from 'jquery';
+import { getJSON, get } from 'jquery';
 import Constants from '../constants/constants';
 
 class NetworkAdapter {
+
     loadInitialData() {
         const dfd = new Deferred();
 
@@ -43,6 +44,21 @@ class NetworkAdapter {
         };
 
         getSound.send();
+
+        return dfd.promise();
+    }
+
+    loadTweets() {
+        const dfd = new Deferred();
+
+        get(Constants.TWEETS_API, (data) => {
+            dfd.resolve(_.map(data, ( item ) => {
+                return {
+                    text: item.text,
+                    image: item.user.profile_image_url
+                };
+            }));
+        })
 
         return dfd.promise();
     }

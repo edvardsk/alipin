@@ -14,11 +14,7 @@ class SpeechAdapter {
         // });
 
         this.recognizer = new Recognizer({
-            interimResults: true,
-            continuous: true,
-            autoRestart: true,
-            language: 'ru',
-            commands: []
+            lang: 'ru'
         });
 
         // this.mainCommands = new Mumble({
@@ -33,7 +29,9 @@ class SpeechAdapter {
     }
 
     start() {
-        this.recognizer.start();
+        commands.greeting['привет :name'].callback();
+
+        this.recognizer.start({continuous: true, autoRestart: true});
         return this;
     }
 
@@ -42,18 +40,8 @@ class SpeechAdapter {
         return this;
     }
 
-    stopGreeting() {
-        this.recognizer.setCommands([]);
-        return this;
-    }
-
     startMainCommands() {
         this.recognizer.setCommands(commands.mainCommands);
-        return this;
-    }
-
-    stopMainCommands() {
-        this.recognizer.setCommands([]);
         return this;
     }
 

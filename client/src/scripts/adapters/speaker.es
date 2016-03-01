@@ -5,6 +5,11 @@ import AudioVisualizator from '../renderer/audio_visualizator';
 
 class Speaker {
 
+    constructor() {
+        this.isPlaying = false;
+        this.playSound = null;
+    }
+
     speak(url) {
         const dfd = new Deferred();
 
@@ -24,6 +29,7 @@ class Speaker {
                     context
                 }), 0);
                 playSound.start(0);
+                this.playSound = playSound;
                 dfd.resolve();
             });
 
@@ -32,11 +38,17 @@ class Speaker {
         return dfd.promise();
     }
 
+    stop() {
+        if (this.playSound) {
+            this.playSound.stop();
+        }
+    }
+
     // COMMANDS
-    greeting(data) {
+    greeting({ name }) {
         const dfd = new Deferred();
 
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.GREETING.replace('${name}', data.name)).then((data) => {
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.GREETING.replace('${name}', name)).then((data) => {
             this.speak(data.snd_url).then(() => {
                 dfd.resolve();
             });
@@ -45,16 +57,73 @@ class Speaker {
         return dfd.promise();
     }
 
-    parting(data) {
+    parting({ name }) {
         const dfd = new Deferred();
 
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.PARTING.replace('${name}', data.name)).then((data) => {
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.PARTING.replace('${name}', name)).then((data) => {
              this.speak(data.snd_url).then(() => {
                 dfd.resolve();
              });
         });
 
         return dfd.promise();
+    }
+
+    time({ hours, minutes }) {
+        const dfd = new Deferred();
+
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.TIME
+                                                                    .replace('${hours}', hours)
+                                                                    .replace('${minutes}', minutes)).then((data) => {
+            this.speak(data.snd_url).then(() => {
+                dfd.resolve();
+            });
+        });
+
+        return dfd.promise();
+    }
+
+    openWebpage(page) {
+        const dfd = new Deferred();
+
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.WEBPAGE.replace('${page}', page)).then((data) => {
+            this.speak(data.snd_url).then(() => {
+                dfd.resolve();
+            });
+        });
+
+        return dfd.promise();
+    }
+
+    closeWebpage() {
+        const dfd = new Deferred();
+        
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.CLOSE_WEBPAGE).then((data) => {
+            this.speak(data.snd_url).then(() => {
+                dfd.resolve();
+            });
+        });
+
+        return dfd.promise();
+    }
+
+    playAudio(fileName) {
+        this.isPlaying = true;
+        this.speak(fileName);
+    }
+
+    stopPlayAudio() {
+        if (this.isPlaying) {
+            this.isPlaying = false;
+            this.stop();
+        }
+        return (new Deferred()).resolve().promise();
+    }
+
+    showTweets() {
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.SHOW_TWEETS).then((data) => {
+            this.speak(data.snd_url);
+        });
     }
 }
 
