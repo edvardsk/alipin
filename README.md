@@ -27,3 +27,14 @@ function helloFunction() {
 // true second argument for overwriting any previously added commands
 annyang.init(commands);
 annyang.start({ autoRestart: true, continuous: true });
+
+// second useful example
+  var r= document.getElementById('results')
+  var color = function(color){var theme='red';r.style.backgroundColor=theme}
+  var commands = {
+    'привет': color
+  };
+
+  annyang.setLanguage('ru-RU');
+  annyang.addCommands(commands);
+  annyang.start();
