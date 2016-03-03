@@ -125,6 +125,30 @@ class Speaker {
             this.speak(data.snd_url);
         });
     }
+
+    openFile(fileName) {
+        const dfd = new Deferred();
+        
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.OPEN_FILE.replace('${fileName}', fileName)).then((data) => {
+            this.speak(data.snd_url).then(() => {
+                dfd.resolve();
+            });
+        });
+
+        return dfd.promise();
+    }
+
+    closeFile() {
+        const dfd = new Deferred();
+        
+        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.CLOSE_FILE).then((data) => {
+            this.speak(data.snd_url).then(() => {
+                dfd.resolve();
+            });
+        });
+
+        return dfd.promise();
+    }
 }
 
 const speaker = new Speaker();

@@ -19,7 +19,6 @@ export default class App {
     start() {
         SpeechAdapter
             .waitGreeeting()
-            // .startMainCommands()
             .start();
     }
 }

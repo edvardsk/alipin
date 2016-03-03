@@ -116,20 +116,29 @@ class CommandsAdapter {
     };
 
     openFile = (action, file) => {
-        const fileName = Constants.MEDIA_FILE_PATH.replace('${fileName}', file.replace(/ /g,'').toLowerCase());
+        const nameFile = file.replace(/ /g,'').toLowerCase();
+        const fileName = Constants.MEDIA_FILE_PATH.replace('${fileName}', nameFile);
         console.log(fileName);
 
         this.closeFile();
 
+        let play;
+
         if (fileName.match(/.(mp3|wav)$/)) {
             // play audio file
-            Speaker.playAudio(fileName);
+            play = _.bind(Speaker.playAudio, Speaker);
         } else if (fileName.match(/.(mp4|avi)$/)) {
             // play video file
-            Renderer.hideLastMessage().then(() => {
-                Renderer.playVideo(fileName);
-            });
+            play = _.bind(Renderer.playVideo, Renderer);
         }
+
+        Renderer.hideLastMessage().then(() => {
+            Speaker.openFile(nameFile).then(() => {
+                setTimeout(() => {
+                    play(fileName);
+                }, 3000);
+            });
+        });
     };
 
     closeFile = () => {
@@ -137,7 +146,11 @@ class CommandsAdapter {
 
         Renderer.hideLastMessage().then(() => {
             Speaker.stopPlayAudio().then(() => {
-                AudioVisualizator.stopRenderAudio();
+                Speaker.closeFile().then(() => {
+                    setTimeout(() => {
+                        AudioVisualizator.stopRenderAudio();
+                    }, 3000);
+                });
             });
         });
     };
@@ -197,7 +210,7 @@ export const commands = {
             regexp: /^(проиграй|открой) файл (.+)/,
             callback: _.partial(adapter.command, adapter.openFile)
         },
-        'останови проигрывание файла': _.partial(adapter.command, adapter.closeFile),
+        'останови файл': _.partial(adapter.command, adapter.closeFile),
         'закрой файл': _.partial(adapter.command, adapter.closeFile),
 
         // tweets

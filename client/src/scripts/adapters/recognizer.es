@@ -3,6 +3,7 @@ export default class Recognizer {
         this.annyang = annyang;
         this.annyang.init({});
         this.annyang.setLanguage(lang);
+        this.annyang.debug(true);
     }
 
     setLanguage(lang) {

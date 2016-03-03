@@ -29,9 +29,7 @@ class SpeechAdapter {
     }
 
     start() {
-        commands.greeting['привет :name'].callback();
-
-        this.recognizer.start({continuous: true, autoRestart: true});
+        this.recognizer.start({continuous: false, autoRestart: true});
         return this;
     }
 

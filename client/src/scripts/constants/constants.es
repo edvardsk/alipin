@@ -5,7 +5,9 @@ export default {
         TIME: 'Сейчас: ${hours}:${minutes}',
         WEBPAGE: 'Страница: ${page} открыта',
         CLOSE_WEBPAGE: 'Веб-страница закрыта',
-        SHOW_TWEETS: 'Последние новости загруженны'
+        SHOW_TWEETS: 'Последние новости представленны',
+        OPEN_FILE: 'Файл ${fileName} открыт',
+        CLOSE_FILE: 'Медиа файл закрыт'
     },
     MEDIA_FILE_PATH: '/media/${fileName}',
     WEB_PAGE: 'http://www.${page}',
