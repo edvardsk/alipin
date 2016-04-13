@@ -13,7 +13,7 @@ class Speaker {
     speak(url) {
         const dfd = new Deferred();
 
-        const context = new AudioContext();
+        let context = new AudioContext();
         let sound;
 
         NetworkAdapter.getSound(url).then( (response) => {
@@ -27,6 +27,11 @@ class Speaker {
                 setTimeout(AudioVisualizator.renderAudio({
                     source: playSound,
                     context
+                }, () => {
+                    if (context) {
+                        context.close();
+                    }
+                    context = null;
                 }), 0);
                 playSound.start(0);
                 this.playSound = playSound;

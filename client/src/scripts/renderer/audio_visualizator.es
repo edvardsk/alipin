@@ -19,6 +19,8 @@ class AudioVisualizator {
 
             if (!this.stop) {
                 this.animate();
+            } else if (this.cb) {
+                this.cb();
             }
 
         });
@@ -80,9 +82,10 @@ class AudioVisualizator {
         * source - audioBufferSourceNode
         * context - AudioContext
     */
-    renderAudio({ source, context }) {
+    renderAudio({ source, context }, cb) {
         this.context = context;
         this.source = source;
+        this.cb = cb;
 
         this.analyser = this.context.createAnalyser();
         this.source.connect(this.analyser);

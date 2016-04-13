@@ -120,7 +120,7 @@ class CommandsAdapter {
         const fileName = Constants.MEDIA_FILE_PATH.replace('${fileName}', nameFile);
         console.log(fileName);
 
-        this.closeFile();
+        Speaker.stopPlayAudio();
 
         let play;
 
@@ -178,44 +178,46 @@ window.adapter = adapter;
 export const commands = {
     greeting: {
         'привет :name': {
-            regexp: /^привет (алейкум|Алекс|олефин|алекян)/,
+            regexp: /привет (алейкум|Алекс|олефин|алекян)/,
             callback: _.partial(adapter.command, adapter.greeting)
         }
     },
     mainCommands: {
         // bye
         'пока :name': {
-            regexp: /^пока (алейкум|Алекс|олефин|алекян)/,
+            regexp: /пока (алейкум|Алекс|олефин|алекян)/,
             callback: _.partial(adapter.command, adapter.parting)
         },
 
         // time
         ':question сейчас :time': {
-            regexp: /^(который|сколько) сейчас (час|времени)/,
+            regexp: /(который|сколько) сейчас (час|времени)/,
             callback: _.partial(adapter.command, adapter.time)
         },
 
         // web pages
         'открой :page :address': {
-            regexp: /^открой (сайт|страницу) (.+)/,
+            regexp: /открой (сайт|страницу) (.+)/,
             callback: _.partial(adapter.command, adapter.openWebpage)
         },
         'закрой :page': {
-            regexp: /^закрой (сайт|страницу)/,
+            regexp: /закрой (сайт|страницу)/,
             callback: _.partial(adapter.command, adapter.closeWebpage)
         },
 
         // files
         ':action файл :file': {
-            regexp: /^(проиграй|открой) файл (.+)/,
+            regexp: /(проиграй|открой) файл (.+)/,
             callback: _.partial(adapter.command, adapter.openFile)
         },
+        'выключи музыку': _.partial(adapter.command, adapter.closeFile),
+        'выключи видео': _.partial(adapter.command, adapter.closeFile),
         'останови файл': _.partial(adapter.command, adapter.closeFile),
         'закрой файл': _.partial(adapter.command, adapter.closeFile),
 
         // tweets
         'покажи :name': {
-            regexp: /^покажи (цветы|клипы)/,
+            regexp: /покажи (цветы|клипы)/,
             callback: _.partial(adapter.command, adapter.showTweets)
         }
 
