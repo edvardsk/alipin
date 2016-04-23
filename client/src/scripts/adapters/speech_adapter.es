@@ -1,9 +1,7 @@
-import Recognizer from './recognizer';
-import { commands } from './commands_adapter';
 
-class SpeechAdapter {
+export default class SpeechAdapter {
 
-    constructor() {
+    constructor(recognizer, commands) {
         // this.greeting = new Mumble({
         //     language: 'ru-RU',
         //     continuous: false,
@@ -12,10 +10,9 @@ class SpeechAdapter {
 
         //     commands: commands.greeting
         // });
-
-        this.recognizer = new Recognizer({
-            lang: 'ru'
-        });
+    
+        this.commands = commands;
+        this.recognizer = recognizer;
 
         // this.mainCommands = new Mumble({
         //     language: 'ru-RU',
@@ -28,26 +25,33 @@ class SpeechAdapter {
 
     }
 
+    setCommands(commands){
+        if (!commands.greeting || !commands.mainCommands) {
+            throw 'Incorrect commands format exception';
+        }
+        this.commands = commands;
+        return this;
+    }
+
     start() {
+        if (!this.commands) {
+            throw 'Empty commands exception';
+        }
         this.recognizer.start({continuous: false, autoRestart: true});
         return this;
     }
 
     waitGreeeting() {
-        this.recognizer.setCommands(commands.greeting);
+        this.recognizer.setCommands(this.commands.greeting);
         return this;
     }
 
     startMainCommands() {
-        this.recognizer.setCommands(commands.mainCommands);
+        this.recognizer.setCommands(this.commands.mainCommands);
         return this;
     }
 
 }
-
-const speechAdapter = new SpeechAdapter();
-
-export default speechAdapter;
 
 
 /*

@@ -1,8 +1,12 @@
 import { Deferred } from 'jquery-deferred';
-import { getJSON, get } from 'jquery';
 import Constants from '../constants/constants';
 
-class NetworkAdapter {
+export default class NetworkAdapter {
+
+    constructor(load) {
+        this.getJSON = load.getJSON;
+        this.get = load.get;
+    }
 
     loadInitialData() {
         const dfd = new Deferred();
@@ -16,9 +20,12 @@ class NetworkAdapter {
 
     getSoundUrl(text) {
         const dfd = new Deferred();
+        if (!text) {
+            return dfd.resolve().promise();
+        }
         const AcapelaGroup = Constants.AcapelaGroup;
 
-        getJSON(AcapelaGroup.ACAPELA_GROUP_API_URL, {
+        this.getJSON(AcapelaGroup.ACAPELA_GROUP_API_URL, {
             prot_vers: 2,
             cl_login: AcapelaGroup.ACAPELA_GROUP_LOGIN,
             cl_app: AcapelaGroup.ACAPELA_GROUP_APP,
@@ -51,11 +58,13 @@ class NetworkAdapter {
     loadTweets() {
         const dfd = new Deferred();
 
-        get(Constants.TWEETS_API, (data) => {
+        this.get(Constants.TWEETS_API, (data) => {
             dfd.resolve(_.map(data, ( item ) => {
+                const image = item.user && item.user.profile_image_url;
+
                 return {
-                    text: item.text,
-                    image: item.user.profile_image_url
+                    text: item.text || Constants.EMPTY_TWITTER_MSG,
+                    image: image || Constants.DEFAULT_TWITTER_IMAGE_URL
                 };
             }));
         })
@@ -63,7 +72,3 @@ class NetworkAdapter {
         return dfd.promise();
     }
 }
-
-const networkAdapter = new NetworkAdapter();
-
-export default networkAdapter;

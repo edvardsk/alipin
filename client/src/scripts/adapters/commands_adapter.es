@@ -1,16 +1,72 @@
 import _ from 'lodash';
-import Renderer from '../renderer/renderer';
-import Speaker from './speaker';
+
 import Constants from '../constants/constants';
-import SpeechAdapter from './speech_adapter';
-import AudioVisualizator from '../renderer/audio_visualizator';
-import NetworkAdapter from './network_adapter';
 
-class CommandsAdapter {
+export default class CommandsAdapter {
 
-    constructor() {
+    constructor(audioVisualizator, networkAdapter, renderer, speaker, speechAdapter) {
         this.currentTimeout = null;
         this.isActionBlocked = false;
+
+        this.renderer = renderer;
+        this.speaker = speaker;
+        this.audioVisualizator = audioVisualizator;
+        this.networkAdapter = networkAdapter;
+        this.speechAdapter = speechAdapter;
+
+        this.commands = null;
+    }
+
+    init() {
+        this.commands = {
+            greeting: {
+                ':lривет :name': {
+                    regexp: /(п|П)ривет (алейкум|Алекс|олефин|алекян)/,
+                    callback: _.partial(this.command, this.greeting)
+                }
+            },
+            mainCommands: {
+                // bye
+                'пока :name': {
+                    regexp: /пока (алейкум|Алекс|олефин|алекян)/,
+                    callback: _.partial(this.command, this.parting)
+                },
+
+                // time
+                ':question сейчас :time': {
+                    regexp: /(который|сколько) сейчас (час|времени)/,
+                    callback: _.partial(this.command, this.time)
+                },
+
+                // web pages
+                'открой :page :address': {
+                    regexp: /открой (сайт|страницу) (.+)/,
+                    callback: _.partial(this.command, this.openWebpage)
+                },
+                'закрой :page': {
+                    regexp: /закрой (сайт|страницу)/,
+                    callback: _.partial(this.command, this.closeWebpage)
+                },
+
+                // files
+                ':action файл :file': {
+                    regexp: /(проиграй|открой) файл (.+)/,
+                    callback: _.partial(this.command, this.openFile)
+                },
+                'выключи музыку': _.partial(this.command, this.closeFile),
+                'выключи видео': _.partial(this.command, this.closeFile),
+                'останови файл': _.partial(this.command, this.closeFile),
+                'закрой файл': _.partial(this.command, this.closeFile),
+
+                // tweets
+                'покажи :name': {
+                    regexp: /покажи (цветы|клипы)/,
+                    callback: _.partial(this.command, this.showTweets)
+                }
+
+                // weather
+            }
+        };
     }
 
     blockActions = () => {
@@ -27,22 +83,22 @@ class CommandsAdapter {
 
     command = (action, ...args) => {
         if (!this.isActionBlocked) {
-            Speaker.stopPlayAudio();
+            this.speaker.stopPlayAudio();
             action(...args);
             this.blockActions();
         }
     };
 
     greeting = () => {
-        Renderer.showHeader().then(() => {
-            Speaker.greeting(Constants.USER).then(() => {
-                Renderer.greeting(Constants.USER);
-                SpeechAdapter
+        this.renderer.showHeader().then(() => {
+            this.speaker.greeting(Constants.USER).then(() => {
+                this.renderer.greeting(Constants.USER);
+                this.speechAdapter
                     .startMainCommands();
 
                 this.currentTimeout = setTimeout(() => {
-                    Renderer.hideLastMessage();
-                    AudioVisualizator.stopRenderAudio();
+                    this.renderer.hideLastMessage();
+                    this.audioVisualizator.stopRenderAudio();
             }, Constants.SMALL_MESSAGE_TIMEOUT);
             });
         });
@@ -52,15 +108,15 @@ class CommandsAdapter {
         clearTimeout(this.currentTimeout);
         this.currentTimeout = null;
 
-        Renderer.hideLastMessage().then(() => {
-            Speaker.parting(Constants.USER).then(() => {
-                Renderer.parting(Constants.USER).then(() => {
+        this.renderer.hideLastMessage().then(() => {
+            this.speaker.parting(Constants.USER).then(() => {
+                this.renderer.parting(Constants.USER).then(() => {
 
                     setTimeout(() => {
-                        Renderer.hideLastMessage().then(() => {
-                            AudioVisualizator.stopRenderAudio();
-                            Renderer.hideHeader().then(() => {
-                                SpeechAdapter
+                        this.renderer.hideLastMessage().then(() => {
+                            this.audioVisualizator.stopRenderAudio();
+                            this.renderer.hideHeader().then(() => {
+                                this.speechAdapter
                                     .waitGreeeting();
                             });
                         });
@@ -79,12 +135,12 @@ class CommandsAdapter {
             minutes: date.getMinutes()
         };
 
-        Renderer.hideLastMessage().then(() => {
-            Speaker.time(dateTime).then(() => {
-                Renderer.time(dateTime).then(() => {
+        this.renderer.hideLastMessage().then(() => {
+            this.speaker.time(dateTime).then(() => {
+                this.renderer.time(dateTime).then(() => {
                     setTimeout(() => {
-                        Renderer.hideLastMessage();
-                        AudioVisualizator.stopRenderAudio();
+                        this.renderer.hideLastMessage();
+                        this.audioVisualizator.stopRenderAudio();
                     }, Constants.SMALL_MESSAGE_TIMEOUT);
                 });
             });
@@ -92,11 +148,11 @@ class CommandsAdapter {
     };
 
     openWebpage = (open, page) => {
-        Renderer.hideLastMessage(true).then(() => {
-            Speaker.openWebpage(page).then(() => {
-                Renderer.webpage(Constants.WEB_PAGE.replace('${page}', page)).then(() => {
+        this.renderer.hideLastMessage(true).then(() => {
+            this.speaker.openWebpage(page).then(() => {
+                this.renderer.webpage(Constants.WEB_PAGE.replace('${page}', page)).then(() => {
                     setTimeout(() => {
-                        AudioVisualizator.stopRenderAudio();
+                        this.audioVisualizator.stopRenderAudio();
                     }, Constants.SMALL_MESSAGE_TIMEOUT);
                 });
             });
@@ -104,12 +160,12 @@ class CommandsAdapter {
     };
 
     closeWebpage = () => {
-        if (!Renderer.window) { return; }
+        if (!this.renderer.window) { return; }
 
-        Renderer.hideLastMessage().then(() => {
-            Speaker.closeWebpage().then(() => {
+        this.renderer.hideLastMessage().then(() => {
+            this.speaker.closeWebpage().then(() => {
                 setTimeout(() => {
-                    AudioVisualizator.stopRenderAudio();
+                    this.audioVisualizator.stopRenderAudio();
                 }, Constants.SMALL_MESSAGE_TIMEOUT);
             });
         });
@@ -120,20 +176,20 @@ class CommandsAdapter {
         const fileName = Constants.MEDIA_FILE_PATH.replace('${fileName}', nameFile);
         console.log(fileName);
 
-        Speaker.stopPlayAudio();
+        this.speaker.stopPlayAudio();
 
         let play;
 
         if (fileName.match(/.(mp3|wav)$/)) {
             // play audio file
-            play = _.bind(Speaker.playAudio, Speaker);
+            play = _.bind(this.speaker.playAudio, this.speaker);
         } else if (fileName.match(/.(mp4|avi)$/)) {
             // play video file
-            play = _.bind(Renderer.playVideo, Renderer);
+            play = _.bind(this.renderer.playVideo, this.renderer);
         }
 
-        Renderer.hideLastMessage().then(() => {
-            Speaker.openFile(nameFile).then(() => {
+        this.renderer.hideLastMessage().then(() => {
+            this.speaker.openFile(nameFile).then(() => {
                 setTimeout(() => {
                     play(fileName);
                 }, 3000);
@@ -144,11 +200,11 @@ class CommandsAdapter {
     closeFile = () => {
         console.log('close file');
 
-        Renderer.hideLastMessage().then(() => {
-            Speaker.stopPlayAudio().then(() => {
-                Speaker.closeFile().then(() => {
+        this.renderer.hideLastMessage().then(() => {
+            this.speaker.stopPlayAudio().then(() => {
+                this.speaker.closeFile().then(() => {
                     setTimeout(() => {
-                        AudioVisualizator.stopRenderAudio();
+                        this.audioVisualizator.stopRenderAudio();
                     }, 3000);
                 });
             });
@@ -156,13 +212,13 @@ class CommandsAdapter {
     };
 
     showTweets = () => {
-        Renderer.hideLastMessage().then(() => {
-            NetworkAdapter.loadTweets().then((tweets) => {
-                Speaker.showTweets();
-                Renderer.showTweets({tweets}).then(() => {
+        this.renderer.hideLastMessage().then(() => {
+            this.networkAdapter.loadTweets().then((tweets) => {
+                this.speaker.showTweets();
+                this.renderer.showTweets({tweets}).then(() => {
                     setTimeout(() => {
-                        Renderer.hideLastMessage();
-                        AudioVisualizator.stopRenderAudio();
+                        this.renderer.hideLastMessage();
+                        this.audioVisualizator.stopRenderAudio();
                     }, Constants.LARGE_MESSAGE_TIMEOUT);
                 });
             });
@@ -170,62 +226,3 @@ class CommandsAdapter {
     };
 
 }
-
-export const adapter = new CommandsAdapter();
-// DEV
-window.adapter = adapter;
-
-export const commands = {
-    greeting: {
-        'привет :name': {
-            regexp: /привет (алейкум|Алекс|олефин|алекян)/,
-            callback: _.partial(adapter.command, adapter.greeting)
-        }
-    },
-    mainCommands: {
-        // bye
-        'пока :name': {
-            regexp: /пока (алейкум|Алекс|олефин|алекян)/,
-            callback: _.partial(adapter.command, adapter.parting)
-        },
-
-        // time
-        ':question сейчас :time': {
-            regexp: /(который|сколько) сейчас (час|времени)/,
-            callback: _.partial(adapter.command, adapter.time)
-        },
-
-        // web pages
-        'открой :page :address': {
-            regexp: /открой (сайт|страницу) (.+)/,
-            callback: _.partial(adapter.command, adapter.openWebpage)
-        },
-        'закрой :page': {
-            regexp: /закрой (сайт|страницу)/,
-            callback: _.partial(adapter.command, adapter.closeWebpage)
-        },
-
-        // files
-        ':action файл :file': {
-            regexp: /(проиграй|открой) файл (.+)/,
-            callback: _.partial(adapter.command, adapter.openFile)
-        },
-        'выключи музыку': _.partial(adapter.command, adapter.closeFile),
-        'выключи видео': _.partial(adapter.command, adapter.closeFile),
-        'останови файл': _.partial(adapter.command, adapter.closeFile),
-        'закрой файл': _.partial(adapter.command, adapter.closeFile),
-
-        // tweets
-        'покажи :name': {
-            regexp: /покажи (цветы|клипы)/,
-            callback: _.partial(adapter.command, adapter.showTweets)
-        }
-
-        // weather
-    }
-};
-
-export default {
-    commands,
-    adapter
-};

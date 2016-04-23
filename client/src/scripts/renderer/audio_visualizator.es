@@ -1,6 +1,6 @@
 import Constants from '../constants/constants';
 
-class AudioVisualizator {
+export default class AudioVisualizator {
     constructor () {
         this.ctx = null;
         this.now = Date.now();
@@ -126,6 +126,3 @@ class AudioVisualizator {
         this.source = null;
     }
 }
-
-const audioVisualizator = new AudioVisualizator();
-export default audioVisualizator;

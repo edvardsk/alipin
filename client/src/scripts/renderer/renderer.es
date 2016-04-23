@@ -7,30 +7,35 @@ import PartingTemplate from '../templates/parting';
 import DateTimeTemplate from '../templates/datetime';
 import TweetsTemplate from '../templates/tweets';
 
-import AudioVisualizator from './audio_visualizator';
-
-class Renderer {
-    constructor() {
+export default class Renderer {
+    constructor(container, audioVisualizator) {
         this.headerIsShown = false;
         this.lastMessage = null;
         this.header = null;
         this.canvas = null;
-    }
 
-    init(container) {
+        this.audioVisualizator = audioVisualizator;
         this.container = container;
     }
 
-    createElement(component, data) {
+    createElement(component, data={}) {
+        if(!component) {
+            throw 'No template exception';
+        }
+
+        if (!component.template || !component.node || !component.class) {
+            throw 'Incorrect arguments exception';
+        }
+
         const insides = Mark.up(component.template, data);
         const container = document.createElement(component.node);
         container.className = component.class;
         container.innerHTML = insides;
 
-        return container
+        return container;
     }
 
-    showMessage(component, data) {
+    showMessage(component, data, showImmediately=false) {
         const dfd = new Deferred();
 
         const container = this.createElement(component, data);
@@ -44,7 +49,11 @@ class Renderer {
             dfd.resolve();
         };
 
-        container.addEventListener('transitionend', listener);
+        if (!showImmediately) {
+            container.addEventListener('transitionend', listener);
+        } else {
+            listener();
+        }
 
         window.requestAnimationFrame(() => {
             window.requestAnimationFrame(() => {
@@ -57,50 +66,49 @@ class Renderer {
 
     showHeader() {
         if (this.headerIsShown) {
-            return (new Deferred()).resolve().promise();
+            return (new Deferred()).reject().promise();
         }
 
-        console.log('show header');
         this.headerIsShown = true;
         const header = this.createElement(HeaderTemplate, {});
         this.container.appendChild(header);
 
         this.header = header;
-        this.canvas = document.getElementById('audio-output');
+        this.canvas = this.container.getElementsByClassName('audio-output')[0];
 
-        AudioVisualizator.setCanvas(this.canvas);
+        this.audioVisualizator.setCanvas(this.canvas);
 
         return (new Deferred()).resolve().promise();
     }
 
     hideHeader() {
-        console.log('hide header.');
+        if (!this.headerIsShown) {
+            return (new Deferred()).reject().promise();
+        }
 
         this.container.removeChild(this.header);
         this.canvas = null;
         this.header = null;
         this.headerIsShown = false;
-        AudioVisualizator.removeCanvas();
+        this.audioVisualizator.removeCanvas();
 
         return (new Deferred()).resolve().promise();
     }
 
-    hideLastMessage(saveWindow) {
+    hideLastMessage(saveWindow, removeImmediately=false) {
         console.log('hide last message');
+        const dfd = new Deferred();
 
         if (!saveWindow && this.window) {
             this.window.close();
-        }
-
-        if (this.video) {
+            this.window = null;
+            return dfd.resolve().promise();
+        } else if (this.video) {
             this.closeVideo();
+            return dfd.resolve().promise();
+        } else if (!this.lastMessage) {
+            return (new Deferred()).reject().promise();
         }
-
-        if (!this.lastMessage) {
-            return (new Deferred()).resolve().promise();
-        }
-
-        const dfd = new Deferred();
 
         this.lastMessage.style.transform = '';
         // this.lastMessage.style.opacity = '0';
@@ -116,7 +124,11 @@ class Renderer {
             dfd.resolve();
         };
 
-        this.lastMessage.addEventListener('transitionend', listener);
+        if (removeImmediately) {
+            listener();
+        } else {
+            this.lastMessage.addEventListener('transitionend', listener);
+        }
 
         return dfd.promise();
     }
@@ -191,7 +203,3 @@ class Renderer {
     }
 
 }
-
-const renderer = new Renderer();
-
-export default renderer;

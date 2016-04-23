@@ -30,5 +30,7 @@ export default {
     CANVAS_HEIGHT: 480,
 
     CIRCLES_COUNT: 30,
-    CANVAS_HUES: [ 0, 120, 170, 225, 300 ]
+    CANVAS_HUES: [ 0, 120, 170, 225, 300 ],
+    DEFAULT_TWITTER_IMAGE_URL: 'https://pbs.twimg.com/profile_images/666407537084796928/YBGgi9BO.png',
+    EMPTY_TWITTER_MSG: 'Sorry, no available information for you'
 };

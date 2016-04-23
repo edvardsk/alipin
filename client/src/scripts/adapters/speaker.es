@@ -1,22 +1,27 @@
 import { Deferred } from 'jquery-deferred';
-import NetworkAdapter from './network_adapter';
 import Constants from '../constants/constants';
-import AudioVisualizator from '../renderer/audio_visualizator';
 
-class Speaker {
+export default class Speaker {
 
-    constructor() {
+    constructor(networkAdapter, audioVisualizator) {
         this.isPlaying = false;
         this.playSound = null;
+
+        this.networkAdapter = networkAdapter;
+        this.audioVisualizator = audioVisualizator;
     }
 
     speak(url) {
+        if (!url) {
+            throw 'No passed url exception';
+        }
+
         const dfd = new Deferred();
 
         let context = new AudioContext();
         let sound;
 
-        NetworkAdapter.getSound(url).then( (response) => {
+        this.networkAdapter.getSound(url).then( (response) => {
             context.decodeAudioData(response, (buffer) => {
 
                 sound = buffer;
@@ -24,7 +29,7 @@ class Speaker {
                 playSound.buffer = sound;
                 playSound.connect(context.destination);
 
-                setTimeout(AudioVisualizator.renderAudio({
+                setTimeout(this.audioVisualizator.renderAudio({
                     source: playSound,
                     context
                 }, () => {
@@ -46,14 +51,21 @@ class Speaker {
     stop() {
         if (this.playSound) {
             this.playSound.stop();
+            this.playSound = null;
+        } else {
+            throw 'No execution exception';
         }
     }
 
     // COMMANDS
-    greeting({ name }) {
+    greeting(options) {
         const dfd = new Deferred();
 
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.GREETING.replace('${name}', name)).then((data) => {
+        if (!options) {
+            return dfd.reject().promise();
+        }
+
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.GREETING.replace('${name}', options.name)).then((data) => {
             this.speak(data.snd_url).then(() => {
                 dfd.resolve();
             });
@@ -62,10 +74,14 @@ class Speaker {
         return dfd.promise();
     }
 
-    parting({ name }) {
+    parting(options) {
         const dfd = new Deferred();
 
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.PARTING.replace('${name}', name)).then((data) => {
+        if (!options) {
+            return dfd.reject().promise();
+        }
+
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.PARTING.replace('${name}', options.name)).then((data) => {
              this.speak(data.snd_url).then(() => {
                 dfd.resolve();
              });
@@ -74,12 +90,16 @@ class Speaker {
         return dfd.promise();
     }
 
-    time({ hours, minutes }) {
+    time(options) {
         const dfd = new Deferred();
 
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.TIME
-                                                                    .replace('${hours}', hours)
-                                                                    .replace('${minutes}', minutes)).then((data) => {
+        if (!options) {
+            return dfd.reject().promise();
+        }
+
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.TIME
+                                                                    .replace('${hours}', options.hours)
+                                                                    .replace('${minutes}', options.minutes)).then((data) => {
             this.speak(data.snd_url).then(() => {
                 dfd.resolve();
             });
@@ -91,7 +111,11 @@ class Speaker {
     openWebpage(page) {
         const dfd = new Deferred();
 
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.WEBPAGE.replace('${page}', page)).then((data) => {
+        if (!page) {
+            return dfd.reject().promise();
+        }
+
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.WEBPAGE.replace('${page}', page)).then((data) => {
             this.speak(data.snd_url).then(() => {
                 dfd.resolve();
             });
@@ -103,7 +127,7 @@ class Speaker {
     closeWebpage() {
         const dfd = new Deferred();
         
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.CLOSE_WEBPAGE).then((data) => {
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.CLOSE_WEBPAGE).then((data) => {
             this.speak(data.snd_url).then(() => {
                 dfd.resolve();
             });
@@ -126,15 +150,21 @@ class Speaker {
     }
 
     showTweets() {
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.SHOW_TWEETS).then((data) => {
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.SHOW_TWEETS).then((data) => {
             this.speak(data.snd_url);
         });
+
+        return (new Deferred()).resolve().promise();
     }
 
     openFile(fileName) {
         const dfd = new Deferred();
-        
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.OPEN_FILE.replace('${fileName}', fileName)).then((data) => {
+
+        if (!fileName) {
+            return dfd.reject().promise();
+        }
+
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.OPEN_FILE.replace('${fileName}', fileName)).then((data) => {
             this.speak(data.snd_url).then(() => {
                 dfd.resolve();
             });
@@ -146,7 +176,7 @@ class Speaker {
     closeFile() {
         const dfd = new Deferred();
         
-        NetworkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.CLOSE_FILE).then((data) => {
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.CLOSE_FILE).then((data) => {
             this.speak(data.snd_url).then(() => {
                 dfd.resolve();
             });
@@ -155,7 +185,3 @@ class Speaker {
         return dfd.promise();
     }
 }
-
-const speaker = new Speaker();
-
-export default speaker;
