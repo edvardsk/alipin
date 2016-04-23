@@ -2,13 +2,13 @@
 <head>
     <meta charset="utf-8">
     <title>Unit Tests</title>
-    <link rel="stylesheet" href="node_modules/mocha/mocha.css" />
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
 </head>
 <body>
     <div id="mocha"></div>
-    <script src="node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
     <script>mocha.setup('bdd')</script>
-    <script src="test/my_something_spec.js"></script>
+    <script src="./build/bundle.js"></script>
     <script>
         mocha.checkLeaks();
         mocha.run();
