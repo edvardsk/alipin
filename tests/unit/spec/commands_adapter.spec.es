@@ -9,12 +9,13 @@ function test() {
 
     let adapter;
 
-    describe('Commands Adapter module', function () {
-
+    describe('\nCommands Adapter module', function () {
         beforeEach(() => {
             adapter = new CommandsAdapter(null, null, null, {
                 stopPlayAudio: () => {}
             }, null);
+
+            adapter.messageTimeout = 10;
         });
 
         describe('init method should init commands', () => {
@@ -38,8 +39,6 @@ function test() {
 
         describe('blockActions method should lock any action until timeout', function () {
 
-            this.timeout(4000);
-
             it ('blockActions method should set isActionBlocked to true', () => {
                 adapter.init();
                 adapter.blockActions();
@@ -53,7 +52,7 @@ function test() {
                 setTimeout(() => {
                     expect(adapter.unBlockActions.calledWith()).equals(false);
                     done();
-                }, 3100);
+                }, 50);
             });
 
             it ('blockActions method should prevent all action until timeout', () => {

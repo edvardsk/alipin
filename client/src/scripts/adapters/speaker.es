@@ -18,7 +18,7 @@ export default class Speaker {
 
         const dfd = new Deferred();
 
-        let context = new AudioContext();
+        let context = new window.AudioContext();
         let sound;
 
         this.networkAdapter.getSound(url).then( (response) => {

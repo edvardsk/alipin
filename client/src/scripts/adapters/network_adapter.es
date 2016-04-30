@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Deferred } from 'jquery-deferred';
 import Constants from '../constants/constants';
 
@@ -13,7 +14,7 @@ export default class NetworkAdapter {
 
         setTimeout(() => {
             dfd.resolve();
-        }, 100);
+        }, 10);
 
         return dfd.promise();
     }

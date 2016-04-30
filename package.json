@@ -18,6 +18,8 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-1": "^6.5.0",
     "chai": "^3.5.0",
+    "cli-color": "^1.1.0",
+    "cron": "^1.1.0",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
@@ -37,8 +39,15 @@
     "websocket": "^1.0.22"
   },
   "scripts": {
-    "build-test": "./node_modules/.bin/webpack --config ./tests/webpack.config.js",
-    "test": "npm run build-test && opener ./tests/index.html",
+    "build-unit-tests": "./node_modules/.bin/webpack --config ./tests/tools/webpack.unit.config.js",
+    "start-unit-tests": "./node_modules/.bin/mocha ./tests/unit.js",
+    "unit-tests": "npm run build-unit-tests && npm run start-unit-tests",
+    "build-e2e-tests": "./node_modules/.bin/webpack --config ./tests/tools/webpack.e2e.config.js",
+    "start-e2e-tests": "./node_modules/.bin/mocha ./tests/e2e.js",
+    "e2e-tests": "npm run build-e2e-tests && start-e2e-tests",
+    "test": "npm run build-unit-tests && npm run build-e2e-tests && npm run start-unit-tests && npm run start-e2e-tests",
+    "simple-test": "npm run unit-tests && npm run e2e-tests",
+    "auto": "node ./tests/auto.js",
     "start": "node ./server",
     "build": "./node_modules/.bin/webpack --config ./client/tools/webpack.config.js",
     "dev": "npm run build & npm run start"

@@ -7,7 +7,7 @@ import $, { Deferred } from 'jquery-deferred';
 function test() {
     const Promise = (new Deferred()).promise().constructor;
 
-    describe('Speech Adapter module', () => {
+    describe('\nSpeech Adapter module', () => {
 
         let setCommands;
         let start;

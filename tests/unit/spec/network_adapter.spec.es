@@ -12,8 +12,7 @@ function test() {
     let getJSONP;
     let get;
 
-    describe('Network Adapter module', () => {
-
+    describe('\nNetwork Adapter module', () => {
         beforeEach(() => {
             getJSONP = sinon.spy(),
             get = sinon.spy();

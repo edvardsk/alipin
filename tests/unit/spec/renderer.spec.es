@@ -1,4 +1,3 @@
-// import JSDOM from 'mocha-jsdom';
 import { expect, assert } from 'chai';
 import sinon from 'sinon';
 import $, { Deferred } from 'jquery-deferred';
@@ -25,12 +24,12 @@ function test() {
         class: 'test_class'
     };
 
-    describe('Renderer module', () => {
-
-        // init fake dom
-        // JSDOM();
-
+    describe('\nRenderer module', () => {
         beforeEach(() => {
+            window.requestAnimationFrame = (cb) => {
+                setTimeout(cb, 0);
+            };
+
             spySet = sinon.spy();
             spyRemove = sinon.spy();
 
@@ -90,6 +89,7 @@ function test() {
 
         });
 
+
         describe('hideHeader method should hide header', () => {
             it ('hideHeader should return promise', () => {
                 expect(renderer.hideHeader()).instanceOf(Promise);
@@ -122,6 +122,7 @@ function test() {
             });
         });
 
+
         describe('createElement method should create element according to passing data and template', () => {
             it ('createElement should throw exception', () => {
                 assert.throws(renderer.createElement, 'No template exception');
@@ -150,11 +151,11 @@ function test() {
 
             });
         });
-    
+
         // we cann't test this class with animation
         // ADD NEW FLAG FOR SIMPLE DISPLAYING MESSAGE
-        describe('createMessage method should display message according to passing data and template', () => {
-            it('createMessage should show message according to template and data', (done) => {
+        describe('showMessage method should display message according to passing data and template', () => {
+            it('showMessage should show message according to template and data', (done) => {
                 const testString = 'test string';
 
                 renderer.showMessage(testTemplate, { name: testString }, true).then(() => {
@@ -164,7 +165,7 @@ function test() {
 
             });
 
-            it('createMessage should show two same messages', (done) => {
+            it('showMessage should show two same messages', (done) => {
                 const testString = 'test string';
 
                 const firstMesssage = renderer.showMessage(testTemplate, { name: testString }, true);
@@ -178,7 +179,7 @@ function test() {
                 });
             });
 
-            it('createMessage should show two different messages', (done) => {
+            it('showMessage should show two different messages', (done) => {
                 const firstTestString = 'first test string';
                 const secondTestString = 'second test string';
 
@@ -251,6 +252,7 @@ function test() {
 
         });
 
+
         // COMMANDS
         describe('greeting method should show greeting message', () => {
             it('greeting should called showMessage with correct template and passing data', (done) => {
@@ -318,7 +320,7 @@ function test() {
                 const video = container.childNodes[0];
 
                 expect(video.className).equals('video-player');
-                expect(video.src).equals(window.location.origin + window.location.pathname.replace('index.html', fileName));
+                expect(video.src).equals(fileName);
             });
         });
 

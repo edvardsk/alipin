@@ -31,10 +31,11 @@ function test() {
     let spySpeak;
     let spyRenderAudio;
 
-    describe('Speaker module', () => {
-        window.AudioContext = AudioContext;
+    describe('\nSpeaker module', () => {
 
         beforeEach(() => {
+            window.AudioContext = AudioContext;
+
             spyGetSound = sinon.spy();
             spyGetSoundUrl = sinon.spy();
             spySpeak = sinon.spy();

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { Deferred } from 'jquery-deferred';
 
 import Constants from '../constants/constants';
 
@@ -15,6 +16,8 @@ export default class CommandsAdapter {
         this.speechAdapter = speechAdapter;
 
         this.commands = null;
+
+        this.messageTimeout = 0;
     }
 
     init() {
@@ -90,44 +93,60 @@ export default class CommandsAdapter {
     };
 
     greeting = () => {
+        const dfd = new Deferred();
+
         this.renderer.showHeader().then(() => {
             this.speaker.greeting(Constants.USER).then(() => {
-                this.renderer.greeting(Constants.USER);
-                this.speechAdapter
-                    .startMainCommands();
+                this.renderer.greeting(Constants.USER, this.messageTimeout > 0).then(() => {
+                    this.speechAdapter
+                        .startMainCommands();
 
-                this.currentTimeout = setTimeout(() => {
-                    this.renderer.hideLastMessage();
-                    this.audioVisualizator.stopRenderAudio();
-            }, Constants.SMALL_MESSAGE_TIMEOUT);
+                    dfd.resolve();
+
+                    this.currentTimeout = setTimeout(() => {
+                        this.renderer.hideLastMessage(false, this.messageTimeout > 0);
+                        this.audioVisualizator.stopRenderAudio();
+                    }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT);
+
+                });
             });
         });
+
+        return dfd.promise();
     };
 
     parting = () => {
+        const dfd = new Deferred();
+
         clearTimeout(this.currentTimeout);
         this.currentTimeout = null;
 
-        this.renderer.hideLastMessage().then(() => {
+
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
             this.speaker.parting(Constants.USER).then(() => {
-                this.renderer.parting(Constants.USER).then(() => {
+                this.renderer.parting(Constants.USER, this.messageTimeout > 0).then(() => {
+
+                    dfd.resolve();
 
                     setTimeout(() => {
-                        this.renderer.hideLastMessage().then(() => {
+                        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
                             this.audioVisualizator.stopRenderAudio();
                             this.renderer.hideHeader().then(() => {
                                 this.speechAdapter
                                     .waitGreeeting();
                             });
                         });
-                    }, Constants.SMALL_MESSAGE_TIMEOUT);
+                    }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT);
 
                 });
             });
         });
+
+        return dfd.promise();
     };
 
     time = () => {
+        const dfd = new Deferred();
         const date = new Date();
 
         const dateTime = {
@@ -135,46 +154,60 @@ export default class CommandsAdapter {
             minutes: date.getMinutes()
         };
 
-        this.renderer.hideLastMessage().then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
             this.speaker.time(dateTime).then(() => {
-                this.renderer.time(dateTime).then(() => {
+                this.renderer.time(dateTime, this.messageTimeout > 0).then(() => {
+                    dfd.resolve();
+
                     setTimeout(() => {
-                        this.renderer.hideLastMessage();
+                        this.renderer.hideLastMessage(false, this.messageTimeout > 0);
                         this.audioVisualizator.stopRenderAudio();
-                    }, Constants.SMALL_MESSAGE_TIMEOUT);
+                    }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT);
                 });
             });
         });
+
+        return dfd.promise();
     };
 
     openWebpage = (open, page) => {
-        this.renderer.hideLastMessage(true).then(() => {
+        const dfd = new Deferred();
+
+        this.renderer.hideLastMessage(true, this.messageTimeout > 0).always(() => {
             this.speaker.openWebpage(page).then(() => {
                 this.renderer.webpage(Constants.WEB_PAGE.replace('${page}', page)).then(() => {
+                    dfd.resolve();
                     setTimeout(() => {
                         this.audioVisualizator.stopRenderAudio();
-                    }, Constants.SMALL_MESSAGE_TIMEOUT);
+                    }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT);
                 });
             });
         });
+
+        return dfd.promise();
     };
 
     closeWebpage = () => {
+        const dfd = new Deferred();
+
         if (!this.renderer.window) { return; }
 
-        this.renderer.hideLastMessage().then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
             this.speaker.closeWebpage().then(() => {
+                dfd.resolve();
                 setTimeout(() => {
                     this.audioVisualizator.stopRenderAudio();
-                }, Constants.SMALL_MESSAGE_TIMEOUT);
+                }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT);
             });
         });
+
+        return dfd.promise();
     };
 
     openFile = (action, file) => {
+        const dfd = new Deferred();
         const nameFile = file.replace(/ /g,'').toLowerCase();
         const fileName = Constants.MEDIA_FILE_PATH.replace('${fileName}', nameFile);
-        console.log(fileName);
 
         this.speaker.stopPlayAudio();
 
@@ -188,41 +221,49 @@ export default class CommandsAdapter {
             play = _.bind(this.renderer.playVideo, this.renderer);
         }
 
-        this.renderer.hideLastMessage().then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
             this.speaker.openFile(nameFile).then(() => {
                 setTimeout(() => {
                     play(fileName);
-                }, 3000);
+                    dfd.resolve();
+                }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT );
             });
         });
+        return dfd.promise();
     };
 
     closeFile = () => {
+        const dfd = new Deferred();
         console.log('close file');
 
-        this.renderer.hideLastMessage().then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
             this.speaker.stopPlayAudio().then(() => {
                 this.speaker.closeFile().then(() => {
                     setTimeout(() => {
                         this.audioVisualizator.stopRenderAudio();
-                    }, 3000);
+                        dfd.resolve();
+                    }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT );
                 });
             });
         });
+        return dfd.promise();
     };
 
     showTweets = () => {
-        this.renderer.hideLastMessage().then(() => {
+        const dfd = new Deferred();
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
             this.networkAdapter.loadTweets().then((tweets) => {
                 this.speaker.showTweets();
-                this.renderer.showTweets({tweets}).then(() => {
+                this.renderer.showTweets({tweets}, this.messageTimeout > 0).then(() => {
+                    dfd.resolve();
                     setTimeout(() => {
-                        this.renderer.hideLastMessage();
+                        this.renderer.hideLastMessage(false, this.messageTimeout > 0);
                         this.audioVisualizator.stopRenderAudio();
-                    }, Constants.LARGE_MESSAGE_TIMEOUT);
+                    }, this.messageTimeout || Constants.LARGE_MESSAGE_TIMEOUT);
                 });
             });
         });
+        return dfd.promise();
     };
 
 }

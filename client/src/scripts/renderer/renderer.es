@@ -44,7 +44,6 @@ export default class Renderer {
 
         const listener = () => {
             this.lastMessage = container;
-
             container.removeEventListener('transitionend', listener);
             dfd.resolve();
         };
@@ -52,11 +51,21 @@ export default class Renderer {
         if (!showImmediately) {
             container.addEventListener('transitionend', listener);
         } else {
-            listener();
+            setTimeout(listener, 0);
         }
 
-        window.requestAnimationFrame(() => {
-            window.requestAnimationFrame(() => {
+        let raf;
+
+        if (!window || !window.requestAnimationFrame) {
+            raf = (cb) => {
+                setTimeout(cb, 0);
+            }
+        } else {
+            raf = window.requestAnimationFrame;
+        }
+
+        raf(() => {
+            raf(() => {
                 container.style.transform = 'translate3d(0, 0, 0)';
             });
         });
@@ -96,11 +105,12 @@ export default class Renderer {
     }
 
     hideLastMessage(saveWindow, removeImmediately=false) {
-        console.log('hide last message');
         const dfd = new Deferred();
 
         if (!saveWindow && this.window) {
-            this.window.close();
+            if (this.window.close) {
+                this.window.close();
+            }
             this.window = null;
             return dfd.resolve().promise();
         } else if (this.video) {
@@ -114,7 +124,6 @@ export default class Renderer {
         // this.lastMessage.style.opacity = '0';
 
         const listener = () => {
-            console.log('transition end');
             if (!this.lastMessage) {
                 dfd.resolve();
             }
@@ -134,38 +143,33 @@ export default class Renderer {
     }
 
     // COMMMANDS
-    greeting(data) {
-        console.log('greeting');
+    greeting(data, showImmediately) {
 
         const dfd = new Deferred();
 
-        this.showMessage(GreetingTemplate, data).then(() => { dfd.resolve(); });
+        this.showMessage(GreetingTemplate, data, showImmediately).then(() => { dfd.resolve(); });
 
         return dfd.promise();
     }
 
-    parting(data) {
-        console.log('parting');
+    parting(data, showImmediately) {
         const dfd = new Deferred();
 
-        this.showMessage(PartingTemplate, data).then(() => { dfd.resolve(); });
+        this.showMessage(PartingTemplate, data, showImmediately).then(() => { dfd.resolve(); });
 
         return dfd.promise();
     }
 
     // date === { hours, minutes }
-    time(date) {
-        console.log('date');
+    time(date, showImmediately) {
         const dfd = new Deferred();
 
-        this.showMessage(DateTimeTemplate, date).then(() => { dfd.resolve(); });
+        this.showMessage(DateTimeTemplate, date, showImmediately).then(() => { dfd.resolve(); });
 
         return dfd.promise();
     }
 
     webpage(page) {
-        console.log(page);
-
         const dfd = new Deferred();
 
         if (this.window) {
@@ -174,7 +178,7 @@ export default class Renderer {
             this.window = window.open(page);
         }
 
-        return dfd.promise();
+        return dfd.resolve().promise();
     }
 
     playVideo(fileName) {
@@ -193,11 +197,10 @@ export default class Renderer {
         this.video = null;
     }
 
-    showTweets(data) {
-        console.log(data);
+    showTweets(data, showImmediately) {
         const dfd = new Deferred();
 
-        this.showMessage(TweetsTemplate, data).then(() => { dfd.resolve(); });
+        this.showMessage(TweetsTemplate, data, showImmediately).then(() => { dfd.resolve(); });
 
         return dfd.promise();
     }
