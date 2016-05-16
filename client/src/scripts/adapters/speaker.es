@@ -74,6 +74,18 @@ export default class Speaker {
         return dfd.promise();
     }
 
+    disco() {
+        const dfd = new Deferred();
+
+        this.networkAdapter.getSoundUrl(Constants.SpeakAudioTemplates.DISCO).then((data) => {
+            this.speak(data.snd_url).then(() => {
+                dfd.resolve();
+            });
+        });
+
+        return dfd.promise();
+    }
+
     parting(options) {
         const dfd = new Deferred();
 

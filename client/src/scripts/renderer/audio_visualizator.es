@@ -12,6 +12,8 @@ export default class AudioVisualizator {
         this.stop = false;
 
         this.maxMagnitude = 600 * 255;
+
+        this.isLarge = false;
     }
 
     animate = () => {
@@ -45,7 +47,7 @@ export default class AudioVisualizator {
 
         // set background color
         this.ctx.fillStyle = 'rgba(18, 18, 29, 1)';
-        this.ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
+        this.ctx.fillRect(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
 
         let hue = Constants.CANVAS_HUES[3];
 
@@ -60,12 +62,12 @@ export default class AudioVisualizator {
             }
 
             totals[i].ratio = totals[i].magnitude / (this.maxMagnitude / Constants.CIRCLES_COUNT);
-            totals[i].strength = totals[i].ratio * Constants.CANVAS_HEIGHT / Constants.CIRCLES_COUNT;
+            totals[i].strength = totals[i].ratio * this.getCanvasHeight() / Constants.CIRCLES_COUNT;
 
             this.ctx.strokeStyle = 'hsla(' + hue + ', 50%, 50%, ' + ((1 / Constants.CIRCLES_COUNT) + 0.1) + ')';
             this.ctx.fillStyle = 'hsla(' + hue + ', 50%, 50%, ' + (1 / Constants.CIRCLES_COUNT) + ')';
             this.ctx.beginPath();
-            this.ctx.arc(Constants.CANVAS_WIDTH / 2, Constants.CANVAS_HEIGHT / 2, totals[i].strength, 0, Math.PI * 2, true);
+            this.ctx.arc(this.getCanvasWidth() / 2, this.getCanvasHeight() / 2, totals[i].strength, 0, Math.PI * 2, true);
             this.ctx.stroke();
             this.ctx.fill();
 
@@ -74,9 +76,28 @@ export default class AudioVisualizator {
 
         ratio = totalMagnitude / this.maxMagnitude;
         this.ctx.fillStyle = 'hsla(' + hue + ', 50%, 50%, ' + (0.005 * ratio) + ')';
-        this.ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
+        this.ctx.fillRect(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
     };
 
+    setNormal() {
+        this.isLarge = false;
+        this.ctx.canvas.width = this.getCanvasWidth();
+        this.ctx.canvas.height = this.getCanvasHeight();
+    }
+
+    setLarge() {
+        this.isLarge = true;
+        this.ctx.canvas.width = this.getCanvasWidth();
+        this.ctx.canvas.height = this.getCanvasHeight();
+    }
+
+    getCanvasHeight() {
+        return this.isLarge ? Constants.LARGE_CANVAS_HEIGHT : Constants.CANVAS_HEIGHT;
+    }
+
+    getCanvasWidth() {
+        return this.isLarge ? Constants.LARGE_CANVAS_WIDTH : Constants.CANVAS_WIDTH;
+    }
 
     /*
         * source - audioBufferSourceNode
@@ -96,15 +117,19 @@ export default class AudioVisualizator {
 
     stopRenderAudio() {
         this.stop = true;
+        if (!this.ctx) {
+            console.warn('There are no context into audio vizualizator');
+            return;
+        }
         this.ctx.fillStyle = 'rgba(18, 18, 29, 1)';
-        this.ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
+        this.ctx.fillRect(0, 0, this.getCanvasWidth(), this.getCanvasHeight());
     }
 
     setCanvas(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.ctx.canvas.width = Constants.CANVAS_WIDTH;
-        this.ctx.canvas.height = Constants.CANVAS_HEIGHT;
+        this.ctx.canvas.width = this.getCanvasWidth();
+        this.ctx.canvas.height = this.getCanvasHeight();
     }
 
     showCanvas() {

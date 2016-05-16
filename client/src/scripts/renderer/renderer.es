@@ -107,7 +107,10 @@ export default class Renderer {
     hideLastMessage(saveWindow, removeImmediately=false) {
         const dfd = new Deferred();
 
-        if (!saveWindow && this.window) {
+        if (this.isDisco) {
+            this.header.classList.remove('full');
+            this.audioVisualizator.setNormal();
+        } else if (!saveWindow && this.window) {
             if (this.window.close) {
                 this.window.close();
             }
@@ -120,12 +123,14 @@ export default class Renderer {
             return (new Deferred()).reject().promise();
         }
 
+        if (!this.lastMessage) { return }
         this.lastMessage.style.transform = '';
         // this.lastMessage.style.opacity = '0';
 
         const listener = () => {
             if (!this.lastMessage) {
                 dfd.resolve();
+                return;
             }
             this.lastMessage.removeEventListener('transitionend', listener);
             this.container.removeChild(this.lastMessage);
@@ -148,6 +153,17 @@ export default class Renderer {
         const dfd = new Deferred();
 
         this.showMessage(GreetingTemplate, data, showImmediately).then(() => { dfd.resolve(); });
+
+        return dfd.promise();
+    }
+
+    disco(showImmediately) {
+        const dfd = new Deferred();
+
+        this.isDisco = true;
+        this.header.classList.add('full');
+        this.audioVisualizator.setLarge();
+        dfd.resolve();
 
         return dfd.promise();
     }

@@ -51,5 +51,7 @@ export default class App {
             .setCommands(this.commandsAdapter.commands)
             .waitGreeeting()
             .start();
+
+        window.adapter = this.commandsAdapter;
     }
 }

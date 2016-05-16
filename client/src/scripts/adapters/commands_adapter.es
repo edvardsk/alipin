@@ -24,7 +24,7 @@ export default class CommandsAdapter {
         this.commands = {
             greeting: {
                 ':lривет :name': {
-                    regexp: /(п|П)ривет (алейкум|Алекс|олефин|алекян)/,
+                    regexp: /(п|П)ривет (алейкум|Алекс|олефин|алекян|Альпен|Альбин)/,
                     callback: _.partial(this.command, this.greeting)
                 }
             },
@@ -65,7 +65,10 @@ export default class CommandsAdapter {
                 'покажи :name': {
                     regexp: /покажи (цветы|клипы)/,
                     callback: _.partial(this.command, this.showTweets)
-                }
+                },
+
+                // disco
+                'давай устроим дискотеку': _.partial(this.command, this.disco)
 
                 // weather
             }
@@ -122,7 +125,7 @@ export default class CommandsAdapter {
         this.currentTimeout = null;
 
 
-        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
             this.speaker.parting(Constants.USER).then(() => {
                 this.renderer.parting(Constants.USER, this.messageTimeout > 0).then(() => {
 
@@ -154,7 +157,7 @@ export default class CommandsAdapter {
             minutes: date.getMinutes()
         };
 
-        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
             this.speaker.time(dateTime).then(() => {
                 this.renderer.time(dateTime, this.messageTimeout > 0).then(() => {
                     dfd.resolve();
@@ -169,6 +172,23 @@ export default class CommandsAdapter {
 
         return dfd.promise();
     };
+
+    disco = () => {
+        const dfd = new Deferred();
+
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
+            this.speaker.disco().then(() => {
+                this.renderer.disco(this.messageTimeout > 0).then(() => {
+                    setTimeout(() => {
+                        this.speaker.playAudio(Constants.MEDIA_FILE_PATH.replace('${fileName}', Constants.DISCO_FILE_NAME));
+                        dfd.resolve();
+                    }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT );
+                });
+            });
+        });
+
+        return dfd.promise();
+    }
 
     openWebpage = (open, page) => {
         const dfd = new Deferred();
@@ -192,7 +212,7 @@ export default class CommandsAdapter {
 
         if (!this.renderer.window) { return; }
 
-        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
             this.speaker.closeWebpage().then(() => {
                 dfd.resolve();
                 setTimeout(() => {
@@ -221,10 +241,12 @@ export default class CommandsAdapter {
             play = _.bind(this.renderer.playVideo, this.renderer);
         }
 
-        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
             this.speaker.openFile(nameFile).then(() => {
                 setTimeout(() => {
-                    play(fileName);
+                    if (play) {
+                        play(fileName);
+                    }
                     dfd.resolve();
                 }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT );
             });
@@ -234,9 +256,8 @@ export default class CommandsAdapter {
 
     closeFile = () => {
         const dfd = new Deferred();
-        console.log('close file');
 
-        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
             this.speaker.stopPlayAudio().then(() => {
                 this.speaker.closeFile().then(() => {
                     setTimeout(() => {
@@ -251,7 +272,7 @@ export default class CommandsAdapter {
 
     showTweets = () => {
         const dfd = new Deferred();
-        this.renderer.hideLastMessage(false, this.messageTimeout > 0).then(() => {
+        this.renderer.hideLastMessage(false, this.messageTimeout > 0).always(() => {
             this.networkAdapter.loadTweets().then((tweets) => {
                 this.speaker.showTweets();
                 this.renderer.showTweets({tweets}, this.messageTimeout > 0).then(() => {
@@ -259,7 +280,7 @@ export default class CommandsAdapter {
                     setTimeout(() => {
                         this.renderer.hideLastMessage(false, this.messageTimeout > 0);
                         this.audioVisualizator.stopRenderAudio();
-                    }, this.messageTimeout || Constants.LARGE_MESSAGE_TIMEOUT);
+                    }, this.messageTimeout || Constants.SMALL_MESSAGE_TIMEOUT);
                 });
             });
         });

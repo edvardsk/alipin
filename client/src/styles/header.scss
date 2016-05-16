@@ -5,10 +5,23 @@
     bottom: 0;
     width: 100%;
 
-    .audio {
+    .audio-output {
         width: $normal-animating-message-size - 20px;
         height: $normal-animating-message-size - 20px;
         margin: 10px auto;
         display: block;
+    }
+
+    &.full {
+        height: 90%;
+        width: 100%;
+        position: relative;
+
+        .audio-output {
+            margin-top: 20px;
+
+            width: 950px;
+            height: 950px;
+        }
     }
 }

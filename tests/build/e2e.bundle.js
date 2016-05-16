@@ -15857,17 +15857,17 @@
 	                minutes: date.getMinutes()
 	            };
 
-	            _this.renderer.hideLastMessage(false, _this.messageTimeout > 0).then(function () {
-	                _this.speaker.time(dateTime).then(function () {
-	                    _this.renderer.time(dateTime, _this.messageTimeout > 0).then(function () {
-	                        dfd.resolve();
+	            _this.renderer.hideLastMessage(false, _this.messageTimeout > 0).always(function () {
+	                // this.speaker.time(dateTime).then(() => {
+	                _this.renderer.time(dateTime, _this.messageTimeout > 0).then(function () {
+	                    dfd.resolve();
 
-	                        setTimeout(function () {
-	                            _this.renderer.hideLastMessage(false, _this.messageTimeout > 0);
-	                            _this.audioVisualizator.stopRenderAudio();
-	                        }, _this.messageTimeout || _constants2.default.SMALL_MESSAGE_TIMEOUT);
-	                    });
+	                    setTimeout(function () {
+	                        _this.renderer.hideLastMessage(false, _this.messageTimeout > 0);
+	                        _this.audioVisualizator.stopRenderAudio();
+	                    }, _this.messageTimeout || _constants2.default.SMALL_MESSAGE_TIMEOUT);
 	                });
+	                // });
 	            });
 
 	            return dfd.promise();
@@ -15939,7 +15939,6 @@
 
 	        this.closeFile = function () {
 	            var dfd = new _jqueryDeferred.Deferred();
-	            console.log('close file');
 
 	            _this.renderer.hideLastMessage(false, _this.messageTimeout > 0).then(function () {
 	                _this.speaker.stopPlayAudio().then(function () {
@@ -15956,15 +15955,15 @@
 
 	        this.showTweets = function () {
 	            var dfd = new _jqueryDeferred.Deferred();
-	            _this.renderer.hideLastMessage(false, _this.messageTimeout > 0).then(function () {
+	            _this.renderer.hideLastMessage(false, _this.messageTimeout > 0).always(function () {
 	                _this.networkAdapter.loadTweets().then(function (tweets) {
-	                    _this.speaker.showTweets();
+	                    // this.speaker.showTweets();
 	                    _this.renderer.showTweets({ tweets: tweets }, _this.messageTimeout > 0).then(function () {
 	                        dfd.resolve();
 	                        setTimeout(function () {
 	                            _this.renderer.hideLastMessage(false, _this.messageTimeout > 0);
 	                            _this.audioVisualizator.stopRenderAudio();
-	                        }, _this.messageTimeout || _constants2.default.LARGE_MESSAGE_TIMEOUT);
+	                        }, _this.messageTimeout || _constants2.default.SMALL_MESSAGE_TIMEOUT);
 	                    });
 	                });
 	            });
@@ -32316,6 +32315,7 @@
 	            var listener = function listener() {
 	                if (!_this2.lastMessage) {
 	                    dfd.resolve();
+	                    return;
 	                }
 	                _this2.lastMessage.removeEventListener('transitionend', listener);
 	                _this2.container.removeChild(_this2.lastMessage);

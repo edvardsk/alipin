@@ -44,7 +44,7 @@
     "unit-tests": "npm run build-unit-tests && npm run start-unit-tests",
     "build-e2e-tests": "./node_modules/.bin/webpack --config ./tests/tools/webpack.e2e.config.js",
     "start-e2e-tests": "./node_modules/.bin/mocha ./tests/e2e.js",
-    "e2e-tests": "npm run build-e2e-tests && start-e2e-tests",
+    "e2e-tests": "npm run build-e2e-tests && npm run start-e2e-tests",
     "test": "npm run build-unit-tests && npm run build-e2e-tests && npm run start-unit-tests && npm run start-e2e-tests",
     "simple-test": "npm run unit-tests && npm run e2e-tests",
     "auto": "node ./tests/auto.js",
